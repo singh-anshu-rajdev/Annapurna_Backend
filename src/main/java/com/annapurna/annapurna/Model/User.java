@@ -38,8 +38,8 @@ public class User {
     private Boolean isPhoneVerified;
 
     /* Image Url */
-    @Column(name = "profile_image")
-    private String imageUrl;
+    @Column(name = "profile_image_id")
+    private Long imageId;
 
     /* User Name */
     @Column(name = "userName")
