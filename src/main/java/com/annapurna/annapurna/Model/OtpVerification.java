@@ -2,39 +2,37 @@ package com.annapurna.annapurna.Model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "otp_verification")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class File {
+@NoArgsConstructor
+@Builder
+public class OtpVerification {
 
-    /* The Id */
+    /* The id */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "file_id")
+    @Column(name = "otp_id")
     private Long id;
 
-    /* The File Name*/
-    @Column(name = "file_name")
-    private String fileName;
+    /* The otp */
+    @Column(name = "otp")
+    private Integer otp;
 
-    /* The File Type*/
-    @Column(name = "file_type")
-    private String fileType;
+    /* The unique_type */
+    @Column(name = "unique_type")
+    private String uniqueType;
 
-    /* The Type */
-    @Column(name = "type")
-    private String type;
-
-    /* The File Data */
-    @Lob
-    @Column(name = "file_data",columnDefinition = "LONGBLOB")
-    private byte[] fileData;
+    /* The valid TimeStamp */
+    @Column(name = "valid_ts")
+    private LocalDateTime validTs;
 
     /* The Created By */
     @Column(name = "created_by")
@@ -51,6 +49,10 @@ public class File {
     /*The Updated TimeStamp */
     @Column(name = "updated_ts")
     private LocalDateTime updatedTs;
+
+    /* The Is Active */
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     /* The Deleted Flag */
     @Column(name = "deleted_flag")

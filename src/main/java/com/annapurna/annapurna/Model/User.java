@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -59,7 +61,7 @@ public class User {
 
     /* Created TimeStamp */
     @Column(name = "created_Ts")
-    private String createdTs;
+    private LocalDateTime createdTs;
 
     /* Updated By */
     @Column(name = "updated_by")
@@ -67,7 +69,7 @@ public class User {
 
     /* Updated TimeStamp */
     @Column(name = "updated_Ts")
-    private String updatedTs;
+    private LocalDateTime updatedTs;
 
     /* Deleted Flag */
     @Column(name = "deleted_flag")

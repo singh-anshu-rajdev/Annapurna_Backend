@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class FileServiceImpl implements FileService {
 
     /**
-     * Logger
+     *  Logger instance to log important events and errors in the service.
      */
     public final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 

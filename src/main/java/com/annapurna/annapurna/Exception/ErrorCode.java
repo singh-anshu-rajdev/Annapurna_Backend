@@ -25,8 +25,39 @@ public enum ErrorCode implements ErrorHandle{
     /**
      * The Error_Annapurna_2004
      */
-    ERR_AP_2004(2004,"File Not Found");
+    ERR_AP_2004(2004,"File Not Found"),
 
+    /**
+     * The Error_Annapurna_2005
+     */
+    ERR_AP_2005(2005,"Invalid Otp"),
+
+    /**
+     * The Error_Annapurna_2006
+     */
+    ERR_AP_2006(2006,"Invalid Request"),
+
+    /**
+     * The Error_Annapurna_2007
+     */
+    ERR_AP_2007(2007,"Email Not Found"),
+
+    /**
+     * The Error_Annapurna_2008
+     */
+    ERR_AP_2008(2008,"Phone Number not Found"),
+
+    /**
+     * The Error_Annapurna_2008
+     */
+    ERR_AP_2009(2009,"Email is already Verified"),
+
+    /**
+     * The Error_Annapurna_2008
+     */
+    ERR_AP_2010(2010,"Phone Number is already Verified"),
+
+    ;
     /**
      * The ErrCode of type Integer
      */

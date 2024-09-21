@@ -19,6 +19,9 @@ import java.util.function.Function;
 @Component
 public class JwtServiceImpl implements JwtService {
 
+    /**
+     * Secret key for Authentication
+     */
     @Value("${authentication.secret.key}")
     String secretKey;
 
