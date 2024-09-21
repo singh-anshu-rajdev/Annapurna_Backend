@@ -18,20 +18,6 @@ public final class AP_Constants {
     public static final String WELCOMING_SUBJECT = "Welcome to Annapurna";
 
     /**
-     * The OTP_VERIFICATION_BODY of type String
-     */
-    public static final String OTP_VERIFICATION_BODY = "Thanks for registering with Annapurna. Please use the given OTP to verify your email address:";
-
-    /**
-     * The WELCOME_MESSAGE_BODY of type String
-     */
-    public static final String WELCOME_MESSAGE_BODY = "Thanks for registering with Annapurna. Your Registration has been Successful. Enjoy your meal with Annapurna Best and Fast Services";
-    /**
-     * The SPACE of type String
-     */
-    public static final String SPACE = " ";
-
-    /**
      * The DEFAULT_USER of type String
      */
     public static final String DEFAULT_USER = "user";
@@ -60,6 +46,11 @@ public final class AP_Constants {
      * The USER_VERIFIED of type String
      */
     public static final String USER_VERIFIED = "User verified Successfully";
+
+    /**
+     * The AT_THE_RATE of type String
+     */
+    public static final String AT_THE_RATE = "@";
 
     /**
      * Initiate a new AP Constants

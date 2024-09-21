@@ -1,5 +1,7 @@
 package com.annapurna.annapurna.Utils;
 
+import com.annapurna.annapurna.Exception.CustomValidationException;
+import com.annapurna.annapurna.Exception.ErrorCode;
 import com.annapurna.annapurna.Model.OtpVerification;
 import com.annapurna.annapurna.Model.User;
 import com.annapurna.annapurna.Repository.OtpVerificationRepository;
@@ -57,6 +59,12 @@ public class AsyncService {
     JavaMailSender javaMailSender;
 
     /**
+     * The generalFunctions of type GeneralFunctions
+     */
+    @Autowired
+    GeneralFunctions generalFunctions;
+
+    /**
      *
      * @param id
      * @param otp
@@ -105,20 +113,26 @@ public class AsyncService {
                 user.setUpdatedBy(AP_Constants.DEFAULT_USER);
                 user.setUpdatedTs(LocalDateTime.now());
                 userRepository.save(user);
+
+                // sending the mail
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setTo(userType);
+
+                // setting subject
+                mailMessage.setSubject(AP_Constants.WELCOMING_SUBJECT);
+
+                // setting Body
+                String message = generalFunctions.buildRegistrationSuccessContent(user.getName());
+                mailMessage.setText(message);
+                mailMessage.setFrom(fromMail);
+                javaMailSender.send(mailMessage);
+            }else{
+                if(userType.contains(AP_Constants.AT_THE_RATE)){
+                    throw new CustomValidationException(ErrorCode.ERR_AP_2007);
+                }else{
+                    throw new CustomValidationException(ErrorCode.ERR_AP_2008);
+                }
             }
-
-            // sending the mail
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(userType);
-
-            // setting subject
-            mailMessage.setSubject(AP_Constants.WELCOMING_SUBJECT);
-
-            // setting Body
-            String message = AP_Constants.WELCOME_MESSAGE_BODY;
-            mailMessage.setText(message);
-            mailMessage.setFrom(fromMail);
-            javaMailSender.send(mailMessage);
         }catch (Exception ex){
             logger.error(LOGGER_MESSAGE_MAIL_FAILURE, ex.getMessage());
         }

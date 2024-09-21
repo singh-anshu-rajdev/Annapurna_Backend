@@ -11,7 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VerificationDTO {
 
+    /* The mail Id */
     private String mail;
+
+    /* The phone Number */
     private String phoneNumber;
+
+    /* The otp */
     private Integer otp;
 }

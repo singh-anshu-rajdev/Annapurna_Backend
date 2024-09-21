@@ -11,6 +11,7 @@ import com.annapurna.annapurna.Repository.UserRepository;
 import com.annapurna.annapurna.Service.MailService;
 import com.annapurna.annapurna.Utils.AP_Constants;
 import com.annapurna.annapurna.Utils.AsyncService;
+import com.annapurna.annapurna.Utils.GeneralFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,12 @@ public class MailServiceImpl implements MailService {
     AsyncService asyncService;
 
     /**
+     * The generalFunctions of type GeneralFunctions
+     */
+    @Autowired
+    GeneralFunctions generalFunctions;
+
+    /**
      * Sends an email and logs different stages of the process.
      *
      * @param verificationDTO   recipient's email address
@@ -83,22 +90,29 @@ public class MailServiceImpl implements MailService {
             Random random = new Random();
             Integer otp = 100000 + random.nextInt(900000);
 
-            // saving otp data asynchronously
-            asyncService.saveOtpVerification(verificationDTO.getMail(),otp);
+            // check weather the email is present or not
+            User user = userRepository.getUserByEmailIdANDDeletedFlagFalse(verificationDTO.getMail());
+            if(null!=user){
+                // saving otp data asynchronously
+                asyncService.saveOtpVerification(verificationDTO.getMail(),otp);
 
-            // sending the mail
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(verificationDTO.getMail());
+                // sending the mail
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setTo(verificationDTO.getMail());
 
-            // setting subject
-            mailMessage.setSubject(AP_Constants.OTP_VERIFICATION_SUBJECT);
+                // setting subject
+                mailMessage.setSubject(AP_Constants.OTP_VERIFICATION_SUBJECT);
 
-            // setting Body
-            String message = AP_Constants.OTP_VERIFICATION_BODY + AP_Constants.SPACE + otp;
-            mailMessage.setText(message);
-            mailMessage.setFrom(fromMail);
-            javaMailSender.send(mailMessage);
-            response.setMessage(AP_Constants.MAIL_SEND_SUCCESS_MESSAGE);
+                // setting Body
+                String message = generalFunctions.buildOtpEmailContent(user.getName(),otp);
+                mailMessage.setText(message);
+                mailMessage.setFrom(fromMail);
+                javaMailSender.send(mailMessage);
+                response.setMessage(AP_Constants.MAIL_SEND_SUCCESS_MESSAGE);
+            }else{
+                throw new CustomValidationException(ErrorCode.ERR_AP_2007);
+            }
+
         }catch (Exception ex){
             logger.error(LOGGER_MESSAGE_MAIL_FAILURE, ex.getMessage());
             response.setStatus(AP_Constants.FALSE);
