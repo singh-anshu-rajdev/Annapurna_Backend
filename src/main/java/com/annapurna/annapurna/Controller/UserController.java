@@ -40,6 +40,11 @@ public class UserController {
         return new ResponseEntity<>(userService.generateAuthToken(loginRequestDTO),HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param dataValidatingRequestDTO
+     * @return
+     */
     @PostMapping("/unsecure/checkExistingData")
     public ResponseEntity<DataValidatingResponseDTO> checkExistingData(@RequestBody DataValidatingRequestDTO dataValidatingRequestDTO){
         return new ResponseEntity<>(userService.checkExistingData(dataValidatingRequestDTO),HttpStatus.OK);
