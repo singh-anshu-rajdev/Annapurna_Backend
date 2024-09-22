@@ -164,6 +164,11 @@ public class MailServiceImpl implements MailService {
         return response;
     }
 
+    /**
+     *
+     * @param verificationDTO
+     * @return
+     */
     public List<OtpVerification> validationOtp(VerificationDTO verificationDTO){
         List<OtpVerification> otps = null;
 

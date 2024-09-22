@@ -52,8 +52,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/unsecure/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll() // Allow access to Swagger
-                        .requestMatchers("/api/**").hasAuthority("ROLE_USER") // Protect all other endpoints
-                .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN") // Protect all other endpoints
+                        .requestMatchers("/api/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")// Protect all other endpoints
                 .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions

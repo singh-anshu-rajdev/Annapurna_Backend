@@ -46,7 +46,7 @@ class FileControllerTest {
         FileController fileController = new FileController();
 
         // Act
-        fileController.uploadImage(new MockMultipartFile("Name", new ByteArrayInputStream("AXAXAXAX".getBytes("UTF-8"))));
+        fileController.uploadImage(new MockMultipartFile("file", new ByteArrayInputStream("AXAXAXAX".getBytes("UTF-8"))));
     }
 
     /**
