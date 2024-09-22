@@ -53,6 +53,31 @@ public final class AP_Constants {
     public static final String AT_THE_RATE = "@";
 
     /**
+     * The USER_CLIENT_ID of type Integer
+     */
+    public static final Integer USER_CLIENT_ID = 1;
+
+    /**
+     * The ROLE_USER of type String
+     */
+    public static final String ROLE_USER = "ROLE_USER";
+
+    /**
+     * The USER_CREATED_SUCCESSFULLY of type String
+     */
+    public static final String USER_CREATED_SUCCESSFULLY = "User created Successfully";
+
+    /**
+     * The USER_REGISTRATION_FAILED of type String
+     */
+    public static final String USER_REGISTRATION_FAILED = "User registration failed";
+
+    /**
+     * The IMAGE of type String
+     */
+    public static final String IMAGE = "image";
+
+    /**
      * Initiate a new AP Constants
      */
     private AP_Constants(){

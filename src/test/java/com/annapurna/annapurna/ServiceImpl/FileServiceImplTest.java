@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.annapurna.annapurna.Service.FileService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -37,7 +38,7 @@ class FileServiceImplTest {
     private FileServiceImpl fileServiceImpl;
 
     /**
-     * Method under test: {@link FileServiceImpl#getFileById(Long)}
+     * Method under test: {@link FileService#getFileById(String)}
      */
     @Test
     void testGetFileById() throws UnsupportedEncodingException {
@@ -53,15 +54,15 @@ class FileServiceImplTest {
         file.setType("Type");
         file.setUpdatedBy("2020-03-01");
         file.setUpdatedTs(LocalDate.of(1970, 1, 1).atStartOfDay());
-        when(fileRepository.findByIdAndDeletedFlagFalse(Mockito.<Long>any())).thenReturn(file);
+        when(fileRepository.findByUniqueIdAndDeletedFlagFalse(Mockito.<String>any())).thenReturn(file);
 
         // Act and Assert
-        assertThrows(CustomValidationException.class, () -> fileServiceImpl.getFileById(1L));
-        verify(fileRepository).findByIdAndDeletedFlagFalse(eq(1L));
+        assertThrows(CustomValidationException.class, () -> fileServiceImpl.getFileById("abc"));
+        verify(fileRepository).findByUniqueIdAndDeletedFlagFalse(eq("abc"));
     }
 
     /**
-     * Method under test: {@link FileServiceImpl#getFileById(Long)}
+     * Method under test: {@link FileService#getFileById(String)}
      */
     @Test
     void testGetFileById2() throws UnsupportedEncodingException {
@@ -89,10 +90,10 @@ class FileServiceImplTest {
         file.setType("Type");
         file.setUpdatedBy("2020-03-01");
         file.setUpdatedTs(LocalDate.of(1970, 1, 1).atStartOfDay());
-        when(fileRepository.findByIdAndDeletedFlagFalse(Mockito.<Long>any())).thenReturn(file);
+        when(fileRepository.findByUniqueIdAndDeletedFlagFalse(Mockito.<String>any())).thenReturn(file);
 
         // Act and Assert
-        assertThrows(CustomValidationException.class, () -> fileServiceImpl.getFileById(1L));
+        assertThrows(CustomValidationException.class, () -> fileServiceImpl.getFileById("abc"));
         verify(file).getFileData();
         verify(file).getFileName();
         verify(file).setCreatedBy(eq("Jan 1, 2020 8:00am GMT+0100"));
@@ -105,11 +106,11 @@ class FileServiceImplTest {
         verify(file).setType(eq("Type"));
         verify(file).setUpdatedBy(eq("2020-03-01"));
         verify(file).setUpdatedTs(isA(LocalDateTime.class));
-        verify(fileRepository).findByIdAndDeletedFlagFalse(eq(1L));
+        verify(fileRepository).findByUniqueIdAndDeletedFlagFalse(eq("abc"));
     }
 
     /**
-     * Method under test: {@link FileServiceImpl#getFileById(Long)}
+     * Method under test: {@link FileService#getFileById(String)}
      */
     @Test
     void testGetFileById3() throws UnsupportedEncodingException {
@@ -137,10 +138,10 @@ class FileServiceImplTest {
         file.setType("Type");
         file.setUpdatedBy("2020-03-01");
         file.setUpdatedTs(LocalDate.of(1970, 1, 1).atStartOfDay());
-        when(fileRepository.findByIdAndDeletedFlagFalse(Mockito.<Long>any())).thenReturn(file);
+        when(fileRepository.findByUniqueIdAndDeletedFlagFalse(Mockito.<String>any())).thenReturn(file);
 
         // Act and Assert
-        assertThrows(CustomValidationException.class, () -> fileServiceImpl.getFileById(1L));
+        assertThrows(CustomValidationException.class, () -> fileServiceImpl.getFileById("abc"));
         verify(file).getFileData();
         verify(file).getFileName();
         verify(file).setCreatedBy(eq("Jan 1, 2020 8:00am GMT+0100"));
@@ -153,6 +154,6 @@ class FileServiceImplTest {
         verify(file).setType(eq("Type"));
         verify(file).setUpdatedBy(eq("2020-03-01"));
         verify(file).setUpdatedTs(isA(LocalDateTime.class));
-        verify(fileRepository).findByIdAndDeletedFlagFalse(eq(1L));
+        verify(fileRepository).findByUniqueIdAndDeletedFlagFalse(eq("abc"));
     }
 }

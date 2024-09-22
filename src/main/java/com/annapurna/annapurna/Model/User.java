@@ -41,7 +41,7 @@ public class User {
 
     /* Image Url */
     @Column(name = "profile_image_id")
-    private Long imageId;
+    private String imageUniqueId;
 
     /* User Name */
     @Column(name = "userName")

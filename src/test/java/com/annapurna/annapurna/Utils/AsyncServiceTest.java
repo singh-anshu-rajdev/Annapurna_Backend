@@ -100,7 +100,7 @@ class AsyncServiceTest {
         user.setDeletedFlag(true);
         user.setEmailId("42");
         user.setId(1L);
-        user.setImageId(1L);
+        user.setImageUniqueId("abc");
         user.setIsEmailVerified(true);
         user.setIsPhoneVerified(true);
         user.setName("Name");
@@ -119,7 +119,7 @@ class AsyncServiceTest {
         user2.setDeletedFlag(true);
         user2.setEmailId("42");
         user2.setId(1L);
-        user2.setImageId(1L);
+        user2.setImageUniqueId("abc");
         user2.setIsEmailVerified(true);
         user2.setIsPhoneVerified(true);
         user2.setName("Name");

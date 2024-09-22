@@ -27,7 +27,7 @@ public class FileController {
      * @throws IOException
      */
     @PostMapping("/unsecure/uploadImage")
-    public ResponseEntity<Long> uploadImage( @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadImage( @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(fileService.uploadFile(file), HttpStatus.OK);
     }
 
@@ -39,7 +39,7 @@ public class FileController {
      */
     @GetMapping("/unsecure/getFileById")
     public ResponseEntity<ByteArrayResource> getFileById
-            (@RequestParam(value = "fileId", required = true) Long fileId) throws IOException {
+            (@RequestParam(value = "fileId", required = true) String fileId) throws IOException {
         return fileService.getFileById(fileId);
     }
 }

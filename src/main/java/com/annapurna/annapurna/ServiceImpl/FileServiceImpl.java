@@ -6,6 +6,7 @@ import com.annapurna.annapurna.Model.File;
 import com.annapurna.annapurna.Repository.FileRepository;
 import com.annapurna.annapurna.Service.FileService;
 import com.annapurna.annapurna.Utils.AP_Constants;
+import com.annapurna.annapurna.Utils.GeneralFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +35,25 @@ public class FileServiceImpl implements FileService {
     private FileRepository fileRepository;
 
     /**
+     * The generalFunctions of type GeneralFunctions
+     */
+    @Autowired
+    private GeneralFunctions generalFunctions;
+
+    /**
      *
      * @param file
      * @return
      * @throws IOException
      */
     @Override
-    public Long uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) throws IOException {
         try{
             File newFile = new File();
             newFile.setFileName(file.getOriginalFilename());
             newFile.setFileType(file.getContentType());
             newFile.setFileData(file.getBytes());
+            newFile.setUniqueId(generalFunctions.generateUniqueIdForProfilePictures());
             newFile.setType(AP_Constants.DEFAULT_FILE_TYPE);
             newFile.setCreatedTs(LocalDateTime.now());
             newFile.setCreatedBy(AP_Constants.DEFAULT_USER);
@@ -53,7 +61,7 @@ public class FileServiceImpl implements FileService {
             newFile.setUpdatedTs(LocalDateTime.now());
             newFile.setDeletedFlag(false);
             newFile = fileRepository.save(newFile);
-            return newFile.getId();
+            return newFile.getUniqueId();
         }catch (Exception e){
             logger.error("Error in uploading file - {}",e.getMessage());
             throw new CustomValidationException(ErrorCode.ERR_AP_2002);
@@ -66,9 +74,9 @@ public class FileServiceImpl implements FileService {
      * @param fileId
      * @return
      */
-    public ResponseEntity<ByteArrayResource> getFileById(Long fileId){
+    public ResponseEntity<ByteArrayResource> getFileById(String fileId){
         try{
-            File file = fileRepository.findByIdAndDeletedFlagFalse(fileId);
+            File file = fileRepository.findByUniqueIdAndDeletedFlagFalse(fileId);
             if(null==file){
                 throw new CustomValidationException(ErrorCode.ERR_AP_2004);
             }else{

@@ -57,7 +57,10 @@ public enum ErrorCode implements ErrorHandle{
      */
     ERR_AP_2010(2010,"Phone Number is already Verified"),
 
-    ;
+    /**
+     * The Error_Annapurna_2011
+     */
+    ERR_AP_2011(2011,"Image not found");
     /**
      * The ErrCode of type Integer
      */

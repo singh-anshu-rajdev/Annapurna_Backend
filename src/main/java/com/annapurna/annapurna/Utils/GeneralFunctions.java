@@ -1,10 +1,30 @@
 package com.annapurna.annapurna.Utils;
 
+import com.annapurna.annapurna.Model.File;
+import com.annapurna.annapurna.Repository.FileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GeneralFunctions {
 
+    /**
+     * The fileRepository of type FileRepository
+     */
+    @Autowired
+    FileRepository fileRepository;
+
+    /**
+     * The passwordEncoder of type PasswordEncoder
+     */
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     /**
      * Method to build plain text content for OTP email
@@ -35,5 +55,25 @@ public class GeneralFunctions {
                 + "You can now log in to your account and explore our services.\n\n"
                 + "Best regards,\n"
                 + "Annapurna";
+    }
+
+    /**
+     * Method generateUniqueIdForProfilePictures
+     *
+     * @return
+     */
+    public String generateUniqueIdForProfilePictures(){
+        String uniqueId = UUID.randomUUID().toString();
+        List<Long> id = fileRepository.findLastCreatedId(PageRequest.of(0,1));
+        if(null!=id && !id.isEmpty()){
+            uniqueId = uniqueId.substring(0,24) + id.get(0);
+        }else{
+            uniqueId = uniqueId.substring(0,23) ;
+        }
+        return uniqueId;
+    }
+
+    public String passwordEncoder(String password){
+        return passwordEncoder.encode(password);
     }
 }

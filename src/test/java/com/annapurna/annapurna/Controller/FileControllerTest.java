@@ -50,12 +50,12 @@ class FileControllerTest {
     }
 
     /**
-     * Method under test: {@link FileController#getFileById(Long)}
+     * Method under test: {@link FileController#getFileById(String)}
      */
     @Test
     void testGetFileById() throws Exception {
         // Arrange
-        when(fileService.getFileById(Mockito.<Long>any())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(200)));
+        when(fileService.getFileById(Mockito.<String>any())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(200)));
         MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/api/unsecure/getFileById");
         MockHttpServletRequestBuilder requestBuilder = getResult.param("fileId", String.valueOf(1L));
 

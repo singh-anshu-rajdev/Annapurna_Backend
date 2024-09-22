@@ -1,6 +1,5 @@
 package com.annapurna.annapurna.Service;
 
-import com.annapurna.annapurna.Model.File;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,12 @@ public interface FileService {
      * @return
      * @throws IOException
      */
-    Long uploadFile(MultipartFile file) throws IOException;
+    String uploadFile(MultipartFile file) throws IOException;
 
     /**
      *
      * @param fileId
      * @return
      */
-    ResponseEntity<ByteArrayResource> getFileById(Long fileId);
+    ResponseEntity<ByteArrayResource> getFileById(String fileId);
 }

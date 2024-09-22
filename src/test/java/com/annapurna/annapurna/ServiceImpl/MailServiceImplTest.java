@@ -134,7 +134,7 @@ class MailServiceImplTest {
         user.setDeletedFlag(true);
         user.setEmailId("42");
         user.setId(1L);
-        user.setImageId(1L);
+        user.setImageUniqueId("abc");
         user.setIsEmailVerified(true);
         user.setIsPhoneVerified(true);
         user.setName("Name");
@@ -180,7 +180,7 @@ class MailServiceImplTest {
         user.setDeletedFlag(true);
         user.setEmailId("42");
         user.setId(1L);
-        user.setImageId(1L);
+        user.setImageUniqueId("abc");
         user.setIsEmailVerified(true);
         user.setIsPhoneVerified(true);
         user.setName("Name");
@@ -232,7 +232,7 @@ class MailServiceImplTest {
         user.setDeletedFlag(true);
         user.setEmailId("42");
         user.setId(1L);
-        user.setImageId(1L);
+        user.setImageUniqueId("abc");
         user.setIsEmailVerified(true);
         user.setIsPhoneVerified(true);
         user.setName("Name");

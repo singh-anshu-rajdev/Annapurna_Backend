@@ -27,6 +27,9 @@ public class File {
     @Column(name = "file_type")
     private String fileType;
 
+    @Column(name = "unique_id")
+    private String uniqueId;
+
     /* The Type */
     @Column(name = "type")
     private String type;
