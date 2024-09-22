@@ -60,7 +60,13 @@ public enum ErrorCode implements ErrorHandle{
     /**
      * The Error_Annapurna_2011
      */
-    ERR_AP_2011(2011,"Image not found");
+    ERR_AP_2011(2011,"Image not found"),
+
+    /**
+     * The Error_Annapurna_2012
+     */
+    ERR_AP_2012(2012,"Invalid Username or password")
+    ;
     /**
      * The ErrCode of type Integer
      */

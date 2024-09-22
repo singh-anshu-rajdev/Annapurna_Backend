@@ -107,7 +107,7 @@ public class AsyncService {
         try{
 
             // verifying the user
-            User user = userRepository.getUserByEmailIdANDDeletedFlagFalse(userType);
+            User user = userRepository.getUserByEmailIdAndDeletedFlagFalse(userType);
             if(null!=user){
                 user.setIsEmailVerified(true);
                 user.setUpdatedBy(AP_Constants.DEFAULT_USER);

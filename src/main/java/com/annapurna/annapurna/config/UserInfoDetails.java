@@ -26,8 +26,8 @@ public class UserInfoDetails implements UserDetails {
      * @param user
      */
     public UserInfoDetails(User user) {
-        this.userNameOrEmail = userNameOrEmail;
-        this.password = password;
+        this.userNameOrEmail = user.getEmailId();
+        this.password = user.getPassword();
         this.authorities = List.of(user.getRoles().split(","))
                 .stream()
                 .map(SimpleGrantedAuthority::new)

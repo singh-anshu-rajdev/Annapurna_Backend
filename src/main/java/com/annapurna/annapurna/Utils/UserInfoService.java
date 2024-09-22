@@ -31,8 +31,11 @@ public class UserInfoService implements UserDetailsService {
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         Optional<User> user = userRepository.getUserByUserNameOrEmailAndDeletedFlagFalse(usernameOrEmail);
 
+        if(null==user || null==user.get()){
+            throw new UsernameNotFoundException("User not found: " + usernameOrEmail);
+        }
         // Converting User to UserDetails
-        return user.map(UserInfoDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + usernameOrEmail));
+        UserDetails userDetails = new UserInfoDetails(user.get());
+        return userDetails;
     }
 }

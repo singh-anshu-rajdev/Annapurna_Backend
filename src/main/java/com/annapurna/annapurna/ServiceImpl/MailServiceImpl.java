@@ -91,7 +91,7 @@ public class MailServiceImpl implements MailService {
             Integer otp = 100000 + random.nextInt(900000);
 
             // check weather the email is present or not
-            User user = userRepository.getUserByEmailIdANDDeletedFlagFalse(verificationDTO.getMail());
+            User user = userRepository.getUserByEmailIdAndDeletedFlagFalse(verificationDTO.getMail());
             if(null!=user){
                 // saving otp data asynchronously
                 asyncService.saveOtpVerification(verificationDTO.getMail(),otp);

@@ -34,7 +34,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
      * @return
      */
     @Query("SELECT u FROM User u WHERE u.emailId = :emailId AND u.deletedFlag = false")
-    User getUserByEmailIdANDDeletedFlagFalse(@Param("emailId") String emailId);
+    User getUserByEmailIdAndDeletedFlagFalse(@Param("emailId") String emailId);
 
     /**
      *
@@ -50,7 +50,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
      * @return
      */
     @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber AND u.deletedFlag = false")
-    User getUserByPhoneNumberANDDeletedFlagFalse(@Param("phoneNumber") String phoneNumber);
-
+    User getUserByPhoneNumberAndDeletedFlagFalse(@Param("phoneNumber") String phoneNumber);
 
 }

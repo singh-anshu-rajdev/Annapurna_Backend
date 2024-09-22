@@ -1,7 +1,6 @@
 package com.annapurna.annapurna.Service;
 
-import com.annapurna.annapurna.DTO.GeneralResponseDTO;
-import com.annapurna.annapurna.DTO.UserRegistrationDTO;
+import com.annapurna.annapurna.DTO.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,4 +12,18 @@ public interface UserService {
      * @return
      */
     GeneralResponseDTO registerUser(UserRegistrationDTO userRegistrationDTO);
+
+    /**
+     *
+     * @param loginRequestDTO
+     * @return
+     */
+    String generateAuthToken(LoginRequestDTO loginRequestDTO);
+
+    /**
+     *
+     * @param dataValidatingRequestDTO
+     * @return
+     */
+    DataValidatingResponseDTO checkExistingData(DataValidatingRequestDTO dataValidatingRequestDTO);
 }

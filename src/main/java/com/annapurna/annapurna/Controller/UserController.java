@@ -1,7 +1,6 @@
 package com.annapurna.annapurna.Controller;
 
-import com.annapurna.annapurna.DTO.GeneralResponseDTO;
-import com.annapurna.annapurna.DTO.UserRegistrationDTO;
+import com.annapurna.annapurna.DTO.*;
 import com.annapurna.annapurna.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,5 +28,20 @@ public class UserController {
     @PostMapping("/unsecure/userRegistration")
     public ResponseEntity<GeneralResponseDTO> userRegistration(@RequestBody UserRegistrationDTO userRegistrationDTO){
         return new ResponseEntity<>(userService.registerUser(userRegistrationDTO), HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param loginRequestDTO
+     * @return
+     */
+    @PostMapping("/unsecure/login")
+    public ResponseEntity<String> generateAuthToken(@RequestBody LoginRequestDTO loginRequestDTO){
+        return new ResponseEntity<>(userService.generateAuthToken(loginRequestDTO),HttpStatus.OK);
+    }
+
+    @PostMapping("/unsecure/checkExistingData")
+    public ResponseEntity<DataValidatingResponseDTO> checkExistingData(@RequestBody DataValidatingRequestDTO dataValidatingRequestDTO){
+        return new ResponseEntity<>(userService.checkExistingData(dataValidatingRequestDTO),HttpStatus.OK);
     }
 }

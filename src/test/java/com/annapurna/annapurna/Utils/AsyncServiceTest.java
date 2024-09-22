@@ -129,14 +129,14 @@ class AsyncServiceTest {
         user2.setUpdatedBy("2020-03-01");
         user2.setUpdatedTs(LocalDate.of(1970, 1, 1).atStartOfDay());
         user2.setUserName("janedoe");
-        when(userRepository.getUserByEmailIdANDDeletedFlagFalse(Mockito.<String>any())).thenReturn(user2);
+        when(userRepository.getUserByEmailIdAndDeletedFlagFalse(Mockito.<String>any())).thenReturn(user2);
 
         // Act
         asyncService.sendWelcomeMail("com.annapurna.annapurna.Utils.AsyncServiceUser Type");
 
         // Assert
         verify(userRepository)
-                .getUserByEmailIdANDDeletedFlagFalse(eq("com.annapurna.annapurna.Utils.AsyncServiceUser Type"));
+                .getUserByEmailIdAndDeletedFlagFalse(eq("com.annapurna.annapurna.Utils.AsyncServiceUser Type"));
         verify(userRepository).save(isA(User.class));
     }
 }

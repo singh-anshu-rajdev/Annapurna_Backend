@@ -1,19 +1,23 @@
 package com.annapurna.annapurna.ServiceImpl;
 
-import com.annapurna.annapurna.DTO.GeneralResponseDTO;
-import com.annapurna.annapurna.DTO.UserRegistrationDTO;
+import com.annapurna.annapurna.DTO.*;
 import com.annapurna.annapurna.Exception.CustomValidationException;
 import com.annapurna.annapurna.Exception.ErrorCode;
 import com.annapurna.annapurna.Model.File;
 import com.annapurna.annapurna.Model.User;
 import com.annapurna.annapurna.Repository.FileRepository;
 import com.annapurna.annapurna.Repository.UserRepository;
+import com.annapurna.annapurna.Service.JwtService;
 import com.annapurna.annapurna.Service.UserService;
 import com.annapurna.annapurna.Utils.AP_Constants;
 import com.annapurna.annapurna.Utils.GeneralFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,6 +44,24 @@ public class UserServiceImpl implements UserService {
      */
     @Autowired
     GeneralFunctions generalFunctions;
+
+    /**
+     * The authenticationManager of type AuthenticationManager
+     */
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    /**
+     * The userDetailsService of type UserDetailsService
+     */
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    /**
+     * The jwtService of type JwtService
+     */
+    @Autowired
+    JwtService jwtService;
 
     /**
      *
@@ -82,5 +104,57 @@ public class UserServiceImpl implements UserService {
             response.setStatus(AP_Constants.FALSE);
         }
         return response;
+    }
+
+    /**
+     *
+     * @param loginRequestDTO
+     * @return
+     */
+    @Override
+    public String generateAuthToken(LoginRequestDTO loginRequestDTO){
+        try{
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
+                    (loginRequestDTO.getUserId(),loginRequestDTO.getPassword()));
+        }catch (Exception ex){
+            throw new CustomValidationException(ErrorCode.ERR_AP_2012);
+        }
+        return jwtService.generateToken(loginRequestDTO.getUserId());
+    }
+
+    /**
+     *
+     * @param dataValidatingRequestDTO
+     * @return
+     */
+    @Override
+    public DataValidatingResponseDTO checkExistingData(DataValidatingRequestDTO dataValidatingRequestDTO) {
+
+        DataValidatingResponseDTO response = new DataValidatingResponseDTO();
+
+        // checking the request Body
+        if (null == dataValidatingRequestDTO ||
+                (null == dataValidatingRequestDTO.getEmailId()
+                        && null == dataValidatingRequestDTO.getPhoneNumber())) {
+            throw new CustomValidationException(ErrorCode.ERR_AP_2006);
+        }
+
+        User user = null;
+        // validating the data
+        if (null != dataValidatingRequestDTO.getEmailId()) {
+            response.setUniqueValue(dataValidatingRequestDTO.getEmailId());
+            user = userRepository.getUserByEmailIdAndDeletedFlagFalse(dataValidatingRequestDTO.getEmailId());
+        } else {
+            response.setUniqueValue(dataValidatingRequestDTO.getPhoneNumber());
+            user = userRepository.getUserByPhoneNumberAndDeletedFlagFalse(dataValidatingRequestDTO.getPhoneNumber());
+        }
+
+        // check for existence
+        if (null == user) {
+            response.setIsExisting(AP_Constants.FALSE);
+        } else {
+            response.setIsExisting(AP_Constants.TRUE);
+        }
+        return  response;
     }
 }
