@@ -51,8 +51,9 @@ public class SecurityConfig{
         http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless APIs
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/unsecure/**").permitAll()
-                .requestMatchers("/api/**").hasAuthority("ROLE_USER") // Protect all other endpoints
-                .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll() // Allow access to Swagger
+                        .requestMatchers("/api/**").hasAuthority("ROLE_USER") // Protect all other endpoints
+                .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN") // Protect all other endpoints
                 .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions
