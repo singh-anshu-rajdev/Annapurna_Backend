@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,12 @@ import java.time.LocalDateTime;
 @Service
 public class UserServiceImpl implements UserService {
 
+    /**
+     *  Logger instance to log important events and errors in the service.
+     */
     public static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private static final String LOGGER_ERROR_REGISTRATION = "Error in registering the user - {}";
 
     /**
      * The fileRepository of type FileRepository
@@ -80,6 +84,13 @@ public class UserServiceImpl implements UserService {
         GeneralResponseDTO response = new GeneralResponseDTO();
         response.setMessage(AP_Constants.USER_CREATED_SUCCESSFULLY);
         response.setStatus(AP_Constants.TRUE);
+        DataValidatingRequestDTO dataValidatingEmail = DataValidatingRequestDTO.builder()
+                .emailId(userRegistrationDTO.getEmailId()).build();
+        DataValidatingRequestDTO dataValidatingNumber = DataValidatingRequestDTO.builder()
+                .emailId(userRegistrationDTO.getEmailId()).build();
+        if(checkExistingData(dataValidatingEmail).getIsExisting() && checkExistingData(dataValidatingNumber).getIsExisting()){
+            throw new CustomValidationException(ErrorCode.ERR_AP_2014);
+        }
         try{
             User user = new User();
             user.setName(userRegistrationDTO.getName());
@@ -99,7 +110,7 @@ public class UserServiceImpl implements UserService {
             user.setUpdatedTs(LocalDateTime.now());
             userRepository.save(user);
         } catch (Exception ex) {
-            LOGGER.error("Error in registering the user - {}",ex.getMessage());
+            LOGGER.error(LOGGER_ERROR_REGISTRATION,ex.getMessage());
             response.setMessage(AP_Constants.USER_REGISTRATION_FAILED);
             response.setStatus(AP_Constants.FALSE);
         }
@@ -112,7 +123,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public String generateAuthToken(LoginRequestDTO loginRequestDTO){
+    public String generateAuthToken(LoginRequestDTO loginRequestDTO) {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
                     (loginRequestDTO.getUserId(),loginRequestDTO.getPassword()));
@@ -131,7 +142,6 @@ public class UserServiceImpl implements UserService {
     public DataValidatingResponseDTO checkExistingData(DataValidatingRequestDTO dataValidatingRequestDTO) {
 
         DataValidatingResponseDTO response = new DataValidatingResponseDTO();
-
         // checking the request Body
         if (null == dataValidatingRequestDTO ||
                 (null == dataValidatingRequestDTO.getEmailId()

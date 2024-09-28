@@ -78,6 +78,37 @@ public final class AP_Constants {
     public static final String IMAGE = "image";
 
     /**
+     * The USER_ROLE_ID of type Long
+     */
+    public static final Long USER_ROLE_ID = 2L;
+
+    /**
+     * The ADMIN_ROLE_ID of type Long
+     */
+    public static final Long ADMIN_ROLE_ID = 1L;
+
+    /**
+     * The ENCODED_DECODED_ALGORITHM of type String
+     */
+    public static final String ENCODED_DECODED_ALGORITHM = "AES";
+
+    /**
+     * The AUTHORIZATION of type String
+     */
+    public static final String AUTHORIZATION = "Authorization";
+
+    /**
+     * The BEARER of type String
+     */
+    public static final String BEARER = "Bearer ";
+
+    /**
+     * The NUMBER_SEVEN of type Integer
+     */
+    public static final Integer NUMBER_SEVEN = 7;
+
+
+    /**
      * Initiate a new AP Constants
      */
     private AP_Constants(){

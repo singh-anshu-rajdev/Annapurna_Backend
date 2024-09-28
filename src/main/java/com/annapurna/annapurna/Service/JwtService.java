@@ -1,5 +1,6 @@
 package com.annapurna.annapurna.Service;
 
+import com.annapurna.annapurna.DTO.UserCacheDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -36,4 +37,11 @@ public interface JwtService {
      * @return
      */
     Date extractExpiration(String token);
+
+    /**
+     *
+     * @param token
+     * @return
+     */
+    UserCacheDTO extractUserCacheFromtoken(String token);
 }

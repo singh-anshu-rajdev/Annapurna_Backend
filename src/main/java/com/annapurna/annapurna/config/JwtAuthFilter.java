@@ -1,6 +1,7 @@
 package com.annapurna.annapurna.config;
 
 import com.annapurna.annapurna.Service.JwtService;
+import com.annapurna.annapurna.Utils.AP_Constants;
 import com.annapurna.annapurna.Utils.UserInfoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,13 +47,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         // Retrieve the Authorization header
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(AP_Constants.AUTHORIZATION);
         String token = null;
         String userNameOrEmail = null;
 
         // Check if the header starts with "Bearer "
-        if(null!=authHeader &&authHeader.startsWith("Bearer ")){
-            token = authHeader.substring(7); // Extract token
+        if(null!=authHeader &&authHeader.startsWith(AP_Constants.BEARER)){
+            token = authHeader.substring(AP_Constants.NUMBER_SEVEN); // Extract token
             userNameOrEmail = jwtService.extractUserName(token);  // Extract username from token
         }
 

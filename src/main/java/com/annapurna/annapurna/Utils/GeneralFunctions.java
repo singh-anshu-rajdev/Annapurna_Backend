@@ -1,10 +1,11 @@
 package com.annapurna.annapurna.Utils;
 
-import com.annapurna.annapurna.Model.File;
+import com.annapurna.annapurna.DTO.UserCacheDTO;
 import com.annapurna.annapurna.Repository.FileRepository;
+import com.annapurna.annapurna.Service.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,12 @@ public class GeneralFunctions {
      */
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    /**
+     * The jwtService of type JwtService
+     */
+    @Autowired
+    JwtService jwtService;
 
     /**
      * Method to build plain text content for OTP email
@@ -73,7 +80,22 @@ public class GeneralFunctions {
         return uniqueId;
     }
 
+    /**
+     *
+     * @param password
+     * @return
+     */
     public String passwordEncoder(String password){
         return passwordEncoder.encode(password);
+    }
+
+    /**
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    public UserCacheDTO getUserCache(HttpServletRequest httpServletRequest){
+        String request = httpServletRequest.getHeader(AP_Constants.AUTHORIZATION).substring(AP_Constants.NUMBER_SEVEN);
+        return jwtService.extractUserCacheFromtoken(request);
     }
 }

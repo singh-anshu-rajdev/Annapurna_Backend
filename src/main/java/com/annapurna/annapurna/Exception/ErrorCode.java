@@ -65,7 +65,18 @@ public enum ErrorCode implements ErrorHandle{
     /**
      * The Error_Annapurna_2012
      */
-    ERR_AP_2012(2012,"Invalid Username or password")
+    ERR_AP_2012(2012,"Invalid Username or password"),
+
+    /**
+     * The Error_Annapurna_2013
+     */
+    ERR_AP_2013(2013,"Invalid Username or password"),
+
+    /**
+     * The Error_Annapurna_2014
+     */
+    ERR_AP_2014(2014,"User already Registered"),
+
     ;
     /**
      * The ErrCode of type Integer
