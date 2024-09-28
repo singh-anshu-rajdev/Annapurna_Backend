@@ -63,11 +63,6 @@
 			<version>2.8.9</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jasypt</groupId>
-			<artifactId>jasypt-spring-boot-starter</artifactId>
-<!--			<version>3.0.4</version>-->
-		</dependency>
-		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
 			<version>0.11.5</version>
