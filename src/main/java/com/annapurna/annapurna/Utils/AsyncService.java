@@ -95,7 +95,6 @@ public class AsyncService {
         otpVerification.setUpdatedBy(AP_Constants.DEFAULT_USER);
 
         otpVerificationRepository.save(otpVerification);
-        return;
     }
 
     /**

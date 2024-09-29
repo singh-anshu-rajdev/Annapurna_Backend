@@ -39,6 +39,11 @@ public class MailServiceImpl implements MailService {
     private static final String LOGGER_MESSAGE_MAIL_FAILURE = "Error in sending otp verification mail - {}";
 
     /**
+     * Initiate Random Function
+     */
+    private Random random = new Random();
+
+    /**
      * SENDER's MAIL ADDRESS
      */
     @Value("${spring.mail.username}")
@@ -87,7 +92,6 @@ public class MailServiceImpl implements MailService {
         GeneralResponseDTO response = new GeneralResponseDTO();
         response.setStatus(AP_Constants.TRUE);
         try{
-            Random random = new Random();
             Integer otp = 100000 + random.nextInt(900000);
 
             // check weather the email is present or not
