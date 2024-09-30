@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -56,12 +55,6 @@ public class UserServiceImpl implements UserService {
     AuthenticationManager authenticationManager;
 
     /**
-     * The userDetailsService of type UserDetailsService
-     */
-    @Autowired
-    UserDetailsService userDetailsService;
-
-    /**
      * The jwtService of type JwtService
      */
     @Autowired
@@ -87,8 +80,8 @@ public class UserServiceImpl implements UserService {
         DataValidatingRequestDTO dataValidatingEmail = DataValidatingRequestDTO.builder()
                 .emailId(userRegistrationDTO.getEmailId()).build();
         DataValidatingRequestDTO dataValidatingNumber = DataValidatingRequestDTO.builder()
-                .emailId(userRegistrationDTO.getEmailId()).build();
-        if(checkExistingData(dataValidatingEmail).getIsExisting() && checkExistingData(dataValidatingNumber).getIsExisting()){
+                .emailId(userRegistrationDTO.getPhoneNumber()).build();
+        if(checkExistingData(dataValidatingEmail).getIsExisting() || checkExistingData(dataValidatingNumber).getIsExisting()){
             throw new CustomValidationException(ErrorCode.ERR_AP_2014);
         }
         try{
