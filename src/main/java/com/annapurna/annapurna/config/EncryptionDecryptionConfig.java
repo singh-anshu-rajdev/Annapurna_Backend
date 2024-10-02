@@ -11,16 +11,16 @@ import java.util.Base64;
 public class EncryptionDecryptionConfig {
 
 
-    private static final String key = "hbfehgkhkdrnlkbfpfskrlasrlvcspld";
+    private static final String KEY = "hbfe85k8kd0nlkbfp23krl0srl54sp7d";
 
     /**
-     * Method to generate Secret Key
+     * Method to generate Secret KEY
      *
      * @return
      * @throws Exception
      */
     public static SecretKey generateKey() throws Exception {
-        byte[] decodedKey = Base64.getDecoder().decode(key);
+        byte[] decodedKey = Base64.getDecoder().decode(KEY);
         return new SecretKeySpec(decodedKey, 0, decodedKey.length, AP_Constants.ENCODED_DECODED_ALGORITHM);
     }
 

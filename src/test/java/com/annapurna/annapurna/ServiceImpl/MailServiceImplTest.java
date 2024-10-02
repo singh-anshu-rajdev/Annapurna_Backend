@@ -24,6 +24,7 @@ import com.annapurna.annapurna.Utils.AsyncService;
 
 import java.time.LocalDate;
 
+import com.annapurna.annapurna.Utils.GeneralFunctions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -54,6 +55,9 @@ class MailServiceImplTest {
 
     @MockBean
     private UserRepository userRepository;
+
+    @MockBean
+    private GeneralFunctions generalFunctions;
 
     /**
      * Method under test:
