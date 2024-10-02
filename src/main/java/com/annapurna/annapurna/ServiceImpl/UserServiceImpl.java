@@ -116,14 +116,19 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public String generateAuthToken(LoginRequestDTO loginRequestDTO) {
+    public TokenResponseDTO generateAuthToken(LoginRequestDTO loginRequestDTO) {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
                     (loginRequestDTO.getUserId(),loginRequestDTO.getPassword()));
+
+            return TokenResponseDTO.builder()
+                    .accessToken(jwtService.generateToken(loginRequestDTO.getUserId()))
+                    .refreshToken(jwtService.generateRefreshToken(loginRequestDTO.getUserId()))
+                    .userName(loginRequestDTO.getUserId())
+                    .build();
         }catch (Exception ex){
             throw new CustomValidationException(ErrorCode.ERR_AP_2012);
         }
-        return jwtService.generateToken(loginRequestDTO.getUserId());
     }
 
     /**
@@ -159,5 +164,24 @@ public class UserServiceImpl implements UserService {
             response.setIsExisting(AP_Constants.TRUE);
         }
         return  response;
+    }
+
+    /**
+     *
+     * @param refreshTokenRequestDTO
+     * @return
+     */
+    @Override
+    public TokenResponseDTO generateTokenFromRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        if(Boolean.TRUE.equals(jwtService.validateToken
+                (refreshTokenRequestDTO.getRefreshToken(), refreshTokenRequestDTO.getUserName()))){
+            return TokenResponseDTO.builder()
+                    .accessToken(jwtService.generateToken(refreshTokenRequestDTO.getUserName()))
+                    .refreshToken(jwtService.generateRefreshToken(refreshTokenRequestDTO.getUserName()))
+                    .userName(refreshTokenRequestDTO.getUserName())
+                    .build();
+        }else{
+            throw new CustomValidationException(ErrorCode.ERR_AP_2006);
+        }
     }
 }

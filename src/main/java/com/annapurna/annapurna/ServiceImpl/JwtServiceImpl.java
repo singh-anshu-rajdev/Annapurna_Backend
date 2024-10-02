@@ -42,6 +42,11 @@ public class JwtServiceImpl implements JwtService {
     /**
      * The TOKEN_BODY_ERROR_MESSAGE of type String
      */
+    private static final String REFRESH_TOKEN_ERROR_MESSAGE = "Error in getting refresh token...{}";
+
+    /**
+     * The TOKEN_BODY_ERROR_MESSAGE of type String
+     */
     private static final String TOKEN_USERNAME_ERROR_MESSAGE = "Error in getting userName...{}";
 
     /* The userRepository of type UserRepository */
@@ -74,6 +79,56 @@ public class JwtServiceImpl implements JwtService {
 
     /**
      *
+     * @param userNameOrEmail
+     * @return
+     */
+    @Override
+    public String generateRefreshToken(String userNameOrEmail){
+        Map<String,Object> claims = new HashMap<>();
+        String subject = null;
+        try{
+            subject = encrypt(userNameOrEmail,generateKey());
+        }catch (Exception e){
+            logger.error(REFRESH_TOKEN_ERROR_MESSAGE,userNameOrEmail);
+        }
+        return refreshToken(claims,subject);
+
+    }
+
+    /**
+     *
+     * @param claims
+     * @param subject
+     * @return
+     */
+    private String refreshToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder().setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 8))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    /**
+     *
+     * @param token
+     * @param userName
+     * @return
+     */
+    @Override
+    public Boolean validateToken(String token, String userName) {
+        String subject = null;
+        try {
+            subject = decrypt(extractUserName(token), generateKey());
+        } catch (Exception ex) {
+            logger.error(REFRESH_TOKEN_ERROR_MESSAGE,ex.getMessage());
+        }
+        return (userName.equals(subject) && !isTokenExpired(token));
+    }
+
+    /**
+     *
      * @param claims
      * @param userNameOrEmail
      * @return
@@ -94,6 +149,15 @@ public class JwtServiceImpl implements JwtService {
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    /**
+     *
+     * @param token
+     * @return
+     */
+    private String extractSubject(String token){
+        return extractClaims(token, Claims::getSubject);
     }
 
     /**

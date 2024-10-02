@@ -18,7 +18,7 @@ public interface UserService {
      * @param loginRequestDTO
      * @return
      */
-    String generateAuthToken(LoginRequestDTO loginRequestDTO);
+    TokenResponseDTO generateAuthToken(LoginRequestDTO loginRequestDTO);
 
     /**
      *
@@ -26,4 +26,11 @@ public interface UserService {
      * @return
      */
     DataValidatingResponseDTO checkExistingData(DataValidatingRequestDTO dataValidatingRequestDTO);
+
+    /**
+     *
+     * @param refreshTokenRequestDTO
+     * @return
+     */
+    TokenResponseDTO generateTokenFromRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO);
 }

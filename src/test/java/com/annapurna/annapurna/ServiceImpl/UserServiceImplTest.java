@@ -1,9 +1,6 @@
 package com.annapurna.annapurna.ServiceImpl;
 
-import com.annapurna.annapurna.DTO.DataValidatingRequestDTO;
-import com.annapurna.annapurna.DTO.DataValidatingResponseDTO;
-import com.annapurna.annapurna.DTO.GeneralResponseDTO;
-import com.annapurna.annapurna.DTO.UserRegistrationDTO;
+import com.annapurna.annapurna.DTO.*;
 import com.annapurna.annapurna.Exception.CustomValidationException;
 import com.annapurna.annapurna.Model.User;
 import com.annapurna.annapurna.Repository.FileRepository;
@@ -49,6 +46,7 @@ import static org.mockito.Mockito.when;
 
         /**
          * Method under test : {@link UserServiceImpl#registerUser(UserRegistrationDTO)}
+         *
          */
         @Test
         void testRegisterUser(){
@@ -95,7 +93,32 @@ import static org.mockito.Mockito.when;
         }
 
         /**
+         * Method under test: {@link UserServiceImpl#generateAuthToken(LoginRequestDTO)}
+         *
+         */
+        @Test
+        void testGenerateAuthToken(){
+            LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
+                    .userId("anshusingh@gmail.com")
+                    .password("12345")
+                    .build();
+
+            // Mocking data
+            when(jwtService.generateToken(Mockito.any(java.lang.String.class))).thenReturn("mock-token");
+            when(jwtService.generateRefreshToken(Mockito.any(java.lang.String.class))).thenReturn("mock-refresh-token");
+
+            TokenResponseDTO responseDTO = userServiceImpl.generateAuthToken(loginRequestDTO);
+
+            // verify
+            assertNotNull(responseDTO);
+            assertEquals("mock-token",responseDTO.getAccessToken());
+            assertEquals("mock-refresh-token",responseDTO.getRefreshToken());
+            assertEquals("anshusingh@gmail.com",responseDTO.getUserName());
+        }
+
+        /**
          * Method under test: {@link UserServiceImpl#checkExistingData(DataValidatingRequestDTO)}
+         *
          */
         @Test
         void testCheckExistingData(){
@@ -171,5 +194,37 @@ import static org.mockito.Mockito.when;
             assertNotNull(trueNumberResponse);
             assertEquals(trueNumberValidatingResponseDTO.getUniqueValue(),trueNumberResponse.getUniqueValue());
             assertEquals(trueNumberValidatingResponseDTO.getIsExisting(),trueNumberResponse.getIsExisting());
+        }
+
+        /**
+         * Method under test: {@link UserServiceImpl#generateTokenFromRefreshToken(RefreshTokenRequestDTO)}
+         *
+         */
+        @Test
+        void testGenerateTokenFromRefreshToken(){
+
+            RefreshTokenRequestDTO refreshTokenRequestDTO = RefreshTokenRequestDTO.builder()
+                    .refreshToken("mock-refresh-token")
+                    .userName("anshusingh@gmail.com")
+                    .build();
+
+            when(jwtService.validateToken(Mockito.any(String.class),Mockito.any(String.class))).thenReturn(Boolean.FALSE);
+
+            // for Exception testing
+            assertThrows(CustomValidationException.class,()->{
+                userServiceImpl.generateTokenFromRefreshToken(refreshTokenRequestDTO);
+            });
+
+            // Mocking data
+            when(jwtService.generateToken(Mockito.any(String.class))).thenReturn("mock-token");
+            when(jwtService.generateRefreshToken(Mockito.any(String.class))).thenReturn("mock-refresh-token");
+            when(jwtService.validateToken(Mockito.any(String.class),Mockito.any(String.class))).thenReturn(Boolean.TRUE);
+
+            TokenResponseDTO responseDTO = userServiceImpl.generateTokenFromRefreshToken(refreshTokenRequestDTO);
+
+            assertNotNull(responseDTO);
+            assertEquals("mock-token",responseDTO.getAccessToken());
+            assertEquals("mock-refresh-token",responseDTO.getRefreshToken());
+            assertEquals("anshusingh@gmail.com",responseDTO.getUserName());
         }
 }

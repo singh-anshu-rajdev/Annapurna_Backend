@@ -49,8 +49,11 @@ public class UserControllerTest {
                 .userId("test@gmail.com")
                 .password("12345")
                 .build();
-        String String = "mocked-token";
-        when(userService.generateAuthToken(Mockito.<LoginRequestDTO>any())).thenReturn(String);
+        TokenResponseDTO tokenResponseDTO = TokenResponseDTO.builder()
+                .accessToken("mocked-token")
+                .refreshToken("mocked-refresh-token")
+                .userName("anshusingh@gmail.com").build();
+        when(userService.generateAuthToken(Mockito.<LoginRequestDTO>any())).thenReturn(tokenResponseDTO);
 
         String content = (new ObjectMapper()).writeValueAsString(loginRequestDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/unsecure/login")
@@ -63,9 +66,39 @@ public class UserControllerTest {
                 .perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(
-                        MockMvcResultMatchers.content().string(String));
+                        MockMvcResultMatchers.content().string(new Gson().toJson(tokenResponseDTO)));
     }
 
+    /**
+     * Method under test : {@link UserController#generateTokenFromRefreshToken(RefreshTokenRequestDTO)}
+     * @throws Exception
+     */
+    @Test
+    void testGenerateTokenFromRefreshToken() throws Exception {
+        TokenResponseDTO tokenResponseDTO = TokenResponseDTO.builder()
+                .accessToken("mock-token")
+                .refreshToken("refresh-mock-token")
+                .userName("anshusingh@gmail.com").build();
+
+        when(userService.generateTokenFromRefreshToken(Mockito.<RefreshTokenRequestDTO>any())).thenReturn(tokenResponseDTO);
+
+        RefreshTokenRequestDTO refreshTokenRequestDTO = RefreshTokenRequestDTO.builder()
+                .refreshToken("refresh-mock-token")
+                .userName("anshusingh@gmail.com").build();
+        String request = (new ObjectMapper()).writeValueAsString(refreshTokenRequestDTO);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/unsecure/generateTokenFromRefreshToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request);
+
+        MockMvcBuilders.standaloneSetup(userController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(
+                        MockMvcResultMatchers.content().string(new Gson().toJson(tokenResponseDTO)));
+    }
     /**
      * Method under test : {@link UserController#userRegistration(UserRegistrationDTO)}
      *

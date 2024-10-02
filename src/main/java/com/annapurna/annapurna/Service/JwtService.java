@@ -44,4 +44,19 @@ public interface JwtService {
      * @return
      */
     UserCacheDTO extractUserCacheFromtoken(String token);
+
+    /**
+     *
+     * @param userNameOrEmail
+     * @return
+     */
+    String generateRefreshToken(String userNameOrEmail);
+
+    /**
+     *
+     * @param token
+     * @param userName
+     * @return
+     */
+    Boolean validateToken(String token, String userName);
 }

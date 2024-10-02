@@ -36,8 +36,18 @@ public class UserController {
      * @return
      */
     @PostMapping("/unsecure/login")
-    public ResponseEntity<String> generateAuthToken(@RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<TokenResponseDTO> generateAuthToken(@RequestBody LoginRequestDTO loginRequestDTO){
         return new ResponseEntity<>(userService.generateAuthToken(loginRequestDTO),HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param refreshTokenRequestDTO
+     * @return
+     */
+    @PostMapping("/unsecure/generateTokenFromRefreshToken")
+    public ResponseEntity<TokenResponseDTO> generateTokenFromRefreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
+        return new ResponseEntity<>(userService.generateTokenFromRefreshToken(refreshTokenRequestDTO),HttpStatus.OK);
     }
 
     /**
