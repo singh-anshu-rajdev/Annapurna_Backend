@@ -6,10 +6,27 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
+
+    /**
+     *
+     * @param ids
+     * @return
+     */
+    @Query("SELECT u FROM User u WHERE u.id IN :ids AND u.deletedFlag = false")
+    List<User> getUserByIds(@Param("ids") List<Long> ids);
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @Query("SELECT u FROM User u WHERE u.id =:id AND u.deletedFlag = false")
+    User getUserById(@Param("id") Long id);
 
     /**
      *

@@ -87,6 +87,21 @@ public enum ErrorCode implements ErrorHandle{
      */
     ERR_AP_2016(2016,"User Not Found"),
 
+    /**
+     * The Error_Annapurna_2017
+     */
+    ERR_AP_2017(2017,"Error in fetching the Testimonial Data"),
+
+    /**
+     * The Error_Annapurna_2018
+     */
+    ERR_AP_2018(2018,"Error in Saving/Editing the Testimonial Data"),
+
+    /**
+     * The Error_Annapurna_2019
+     */
+    ERR_AP_2019(2019,"Testimonial Data Not found"),
+
     ;
     /**
      * The ErrCode of type Integer
