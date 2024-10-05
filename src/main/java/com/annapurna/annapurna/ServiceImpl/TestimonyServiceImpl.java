@@ -71,7 +71,7 @@ public class TestimonyServiceImpl implements TestimonialService {
 
             // Map the user with its image based on tm userId
             List<User> users = userRepository.getUserByIds(testimonialList.parallelStream().map(Testimonial::getUserId).toList());
-            Map<Long,String> imageMap = users.stream().collect(Collectors.toMap(
+            Map<Long,String> imageMap = users.stream().filter(u->null!=u.getImageUniqueId()).collect(Collectors.toMap(
                     User::getId,
                     User::getImageUniqueId,
                     (existing, replacement) -> existing,
