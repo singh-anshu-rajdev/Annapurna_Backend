@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public TokenResponseDTO generateAuthToken(LoginRequestDTO loginRequestDTO) {
+    public TokenResponseDTO generateAuthToken(LoginRequestDTO loginRequestDTO){
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
                     (loginRequestDTO.getUserId(),loginRequestDTO.getPassword()));
@@ -126,8 +126,14 @@ public class UserServiceImpl implements UserService {
                     .refreshToken(jwtService.generateRefreshToken(loginRequestDTO.getUserId()))
                     .userName(loginRequestDTO.getUserId())
                     .build();
-        }catch (Exception ex){
-            throw new CustomValidationException(ErrorCode.ERR_AP_2012);
+        }catch (Exception ex) {
+            if(ex.getMessage().equals(ErrorCode.ERR_AP_2015.getMessage())){
+                throw new CustomValidationException(ErrorCode.ERR_AP_2015);
+            }else if(ex.getMessage().equals(ErrorCode.ERR_AP_2016.getMessage())){
+                throw new CustomValidationException(ErrorCode.ERR_AP_2016);
+            }else{
+                throw new CustomValidationException(ErrorCode.ERR_AP_2012); // Catching any other exception and throwing a general error
+            }
         }
     }
 

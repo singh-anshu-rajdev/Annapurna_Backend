@@ -117,6 +117,10 @@ public class MailServiceImpl implements MailService {
                 throw new CustomValidationException(ErrorCode.ERR_AP_2007);
             }
 
+        }catch(CustomValidationException ex){
+            logger.error(LOGGER_MESSAGE_MAIL_FAILURE, ex.getMessage());
+            response.setStatus(AP_Constants.FALSE);
+            response.setMessage(ex.getMessage());
         }catch (Exception ex){
             logger.error(LOGGER_MESSAGE_MAIL_FAILURE, ex.getMessage());
             response.setStatus(AP_Constants.FALSE);

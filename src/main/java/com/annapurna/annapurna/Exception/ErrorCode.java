@@ -77,6 +77,16 @@ public enum ErrorCode implements ErrorHandle{
      */
     ERR_AP_2014(2014,"User already Registered"),
 
+    /**
+     * The Error_Annapurna_2015
+     */
+    ERR_AP_2015(2015,"User Not verified. please verify the user and try again!"),
+
+    /**
+     * The Error_Annapurna_2016
+     */
+    ERR_AP_2016(2016,"User Not Found"),
+
     ;
     /**
      * The ErrCode of type Integer
