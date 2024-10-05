@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TestimonyResponseDTO {
 
-    /* The Name */
+    /* The Id */
     private Long testimonyId;
+
+    /* The userName*/
+    private String userName;
 
     /* The user Image */
     private String image;

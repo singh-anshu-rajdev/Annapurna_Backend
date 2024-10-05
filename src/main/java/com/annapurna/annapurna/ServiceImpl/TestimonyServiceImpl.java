@@ -71,9 +71,9 @@ public class TestimonyServiceImpl implements TestimonialService {
 
             // Map the user with its image based on tm userId
             List<User> users = userRepository.getUserByIds(testimonialList.parallelStream().map(Testimonial::getUserId).toList());
-            Map<Long,String> imageMap = users.stream().filter(u->null!=u.getImageUniqueId()).collect(Collectors.toMap(
+            Map<Long,User> userMap = users.parallelStream().collect(Collectors.toMap(
                     User::getId,
-                    User::getImageUniqueId,
+                    user -> user,
                     (existing, replacement) -> existing,
                     HashMap::new
             ));
@@ -82,8 +82,9 @@ public class TestimonyServiceImpl implements TestimonialService {
             List<TestimonyResponseDTO> data = testimonialList.parallelStream().map(tm ->{
                 return TestimonyResponseDTO.builder()
                         .testimonyId(tm.getId())
+                        .userName(userMap.get(tm.getUserId()).getName())
                         .message(tm.getMessage())
-                        .image(imageMap.containsKey(tm.getId())?imageMap.get(tm.getUserId()):null)
+                        .image(userMap.get(tm.getUserId()).getImageUniqueId())
                         .rating(tm.getRating()).build();
             }).toList();
 
@@ -137,6 +138,7 @@ public class TestimonyServiceImpl implements TestimonialService {
                     // giving response
                     testimonyResponseDTO = TestimonyResponseDTO.builder()
                             .testimonyId(newTestimonial.getId())
+                            .userName(user.getName())
                             .image(user.getImageUniqueId())
                             .rating(newTestimonial.getRating()).
                             message(newTestimonial.getMessage()).build();
@@ -153,6 +155,7 @@ public class TestimonyServiceImpl implements TestimonialService {
                     testimonyResponseDTO = TestimonyResponseDTO.builder()
                             .testimonyId(testimonial.getId())
                             .image(user.getImageUniqueId())
+                            .userName(user.getName())
                             .rating(testimonial.getRating()).
                             message(testimonial.getMessage()).build();
                 }
