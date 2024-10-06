@@ -60,7 +60,6 @@ public class TestimonyServiceImpl implements TestimonialService {
     @Override
     public TestimoniesResponseDTO getAllTestimony(TestimoniesRequestDTO testimoniesRequestDTO) {
         try{
-
             TestimoniesResponseDTO testimoniesResponseDTO = new TestimoniesResponseDTO();
             // set pageable
             Pageable pageable = PageRequest.of(testimoniesRequestDTO.getPageNumber(),testimoniesRequestDTO.getRecords());
