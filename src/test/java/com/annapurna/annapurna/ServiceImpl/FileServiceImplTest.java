@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.annapurna.annapurna.Service.FileService;
+import com.annapurna.annapurna.Utils.GeneralFunctions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -36,6 +37,9 @@ class FileServiceImplTest {
 
     @Autowired
     private FileServiceImpl fileServiceImpl;
+
+    @MockBean
+    GeneralFunctions generalFunctions;
 
     /**
      * Method under test: {@link FileService#getFileById(String)}

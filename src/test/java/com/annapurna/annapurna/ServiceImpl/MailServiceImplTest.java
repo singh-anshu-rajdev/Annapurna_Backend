@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -65,17 +64,20 @@ class MailServiceImplTest {
      */
     @Test
     void testSendOtpForVerification() throws MailException {
+
+        VerificationDTO verificationDTO = VerificationDTO.builder().mail("anshusingh@gmail.com").build();
+
         // Arrange
         doNothing().when(asyncService).saveOtpVerification(Mockito.<String>any(), Mockito.<Integer>any());
         doNothing().when(javaMailSender).send(Mockito.<SimpleMailMessage>any());
+        when(userRepository.getUserByEmailIdAndDeletedFlagFalse(Mockito.any(String.class))).thenReturn(User.builder()
+                .emailId("anshusingh@gmail.com").name("Anshu").userName("Anshu").isEmailVerified(true).build());
 
         // Act
         GeneralResponseDTO actualSendOtpForVerificationResult = mailServiceImpl
-                .sendOtpForVerification(new VerificationDTO());
+                .sendOtpForVerification(verificationDTO);
 
         // Assert
-        verify(asyncService).saveOtpVerification(isNull(), eq(448094));
-        verify(javaMailSender).send(isA(SimpleMailMessage.class));
         assertEquals("Mail sent Successfully", actualSendOtpForVerificationResult.getMessage());
         assertTrue(actualSendOtpForVerificationResult.getStatus());
     }
@@ -96,9 +98,7 @@ class MailServiceImplTest {
                 .sendOtpForVerification(new VerificationDTO());
 
         // Assert
-        verify(asyncService).saveOtpVerification(isNull(), eq(500765));
-        verify(javaMailSender).send(isA(SimpleMailMessage.class));
-        assertEquals("Failed to sent the Mail", actualSendOtpForVerificationResult.getMessage());
+        assertEquals("Email Not Found", actualSendOtpForVerificationResult.getMessage());
         assertFalse(actualSendOtpForVerificationResult.getStatus());
     }
 

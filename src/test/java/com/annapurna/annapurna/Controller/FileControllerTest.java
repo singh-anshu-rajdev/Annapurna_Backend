@@ -3,17 +3,13 @@ package com.annapurna.annapurna.Controller;
 import static org.mockito.Mockito.when;
 
 import com.annapurna.annapurna.Service.FileService;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,14 +35,28 @@ class FileControllerTest {
      * Method under test: {@link FileController#uploadImage(MultipartFile)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testUploadImage() throws IOException {
+//    @Disabled("TODO: Complete this test")
+    void testUploadImage() throws Exception {
 
         // Arrange
-        FileController fileController = new FileController();
+        MockMultipartFile  file = new MockMultipartFile(
+                "file",
+                "test.txt",
+                MediaType.TEXT_PLAIN_VALUE,
+                "AXAXAXAX".getBytes("UTF-8")
+        );
+        when(fileService.uploadFile(Mockito.any(MultipartFile.class))).thenReturn("success");
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .multipart("/api/unsecure/uploadImage")
+                .file(file) // add the MockMultipartFile directly to the request
+                .contentType(MediaType.MULTIPART_FORM_DATA);
 
         // Act
-        fileController.uploadImage(new MockMultipartFile("file", new ByteArrayInputStream("AXAXAXAX".getBytes("UTF-8"))));
+        MockMvcBuilders.standaloneSetup(fileController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("success"));
     }
 
     /**
