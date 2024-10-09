@@ -68,6 +68,11 @@ public final class AP_Constants {
     public static final String USER_CREATED_SUCCESSFULLY = "User created Successfully";
 
     /**
+     * The FEATURE_CREATED_SUCCESSFULLY of type String
+     */
+    public static final String FEATURE_CREATED_SUCCESSFULLY = "Feature created Successfully";
+
+    /**
      * The USER_REGISTRATION_FAILED of type String
      */
     public static final String USER_REGISTRATION_FAILED = "User registration failed";

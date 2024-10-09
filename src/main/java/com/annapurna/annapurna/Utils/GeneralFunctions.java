@@ -19,19 +19,19 @@ public class GeneralFunctions {
      * The fileRepository of type FileRepository
      */
     @Autowired
-    FileRepository fileRepository;
+    private FileRepository fileRepository;
 
     /**
      * The passwordEncoder of type PasswordEncoder
      */
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     /**
      * The jwtService of type JwtService
      */
     @Autowired
-    JwtService jwtService;
+    private JwtService jwtService;
 
     /**
      * Method to build plain text content for OTP email
@@ -95,7 +95,15 @@ public class GeneralFunctions {
      * @return
      */
     public UserCacheDTO getUserCache(HttpServletRequest httpServletRequest){
-        String request = httpServletRequest.getHeader(AP_Constants.AUTHORIZATION).substring(AP_Constants.NUMBER_SEVEN);
-        return jwtService.extractUserCacheFromtoken(request);
+        UserCacheDTO response = null;
+        if(null!=httpServletRequest.getHeader(AP_Constants.AUTHORIZATION)){
+            String request = httpServletRequest.getHeader(AP_Constants.AUTHORIZATION).substring(AP_Constants.NUMBER_SEVEN);
+            response =  jwtService.extractUserCacheFromtoken(request);
+        }
+        return response;
+    }
+
+    public String generateCode() {
+        return UUID.randomUUID().toString().substring(0,3)+UUID.randomUUID().toString().substring(0,3);
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,8 @@ public class TestimonyServiceImpl implements TestimonialService {
             }).toList();
 
             // Return the data
-            testimoniesResponseDTO.setData(data);
+            testimoniesResponseDTO.setData(data.stream()
+                    .sorted(Comparator.comparing(TestimonyResponseDTO::getRating).reversed()).toList());
             testimoniesResponseDTO.setTotalrecords(count);
             testimoniesResponseDTO.setPageNumber(testimoniesRequestDTO.getPageNumber());
             return testimoniesResponseDTO;
