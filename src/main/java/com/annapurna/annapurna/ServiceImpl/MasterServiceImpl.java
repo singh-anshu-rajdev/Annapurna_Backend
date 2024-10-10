@@ -94,6 +94,7 @@ public class MasterServiceImpl implements MasterService {
                                 .name(fl.getFeatureName())
                                 .code(generalFunctions.generateCode())
                                 .isLogin(fl.getIsLogin())
+                                .isEnabled(AP_Constants.TRUE)
                                 .deletedFlag(AP_Constants.FALSE)
                                 .createdTs(LocalDateTime.now())
                                 .updatedTs(LocalDateTime.now())

@@ -17,13 +17,13 @@ public interface FeaturesRepository extends JpaRepository<Features,Integer> {
      * @param isLogin
      * @return
      */
-    @Query("select f from Features f where f.isLogin = :isLogin AND f.deletedFlag = false")
+    @Query("select f from Features f where f.isLogin = :isLogin AND f.isEnabled = true AND f.deletedFlag = false")
     List<Features> findByIsLoginFalse(@Param("isLogin") Boolean isLogin);
 
     /**
      *
      * @return
      */
-    @Query("select f from Features f where f.deletedFlag = false")
+    @Query("select f from Features f where f.deletedFlag = false AND f.isEnabled = true")
     List<Features> findAllFeatures();
 }
