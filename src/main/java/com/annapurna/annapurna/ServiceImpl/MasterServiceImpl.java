@@ -56,11 +56,17 @@ public class MasterServiceImpl implements MasterService {
         }
 
         // Feature Data Setup
-        List<Features> features = null;
+        List<Features> features = featuresRepository.findAllFeatures();
         if(null!=userCacheDTO){
-            features = featuresRepository.findAllFeatures();
+            features = features.parallelStream()
+                    .filter(feature -> null == feature.getIsLogin() ||
+                            feature.getIsLogin().equals(AP_Constants.TRUE)
+                            ).toList();
         }else{
-            features = featuresRepository.findByIsLoginFalse(AP_Constants.FALSE);
+            features = features.parallelStream()
+                    .filter(feature -> null == feature.getIsLogin() ||
+                            feature.getIsLogin().equals(AP_Constants.FALSE)
+                    ).toList();;
         }
         List<FeatureResponseDTO> featureResponseDTOList = features.parallelStream().map( f-> {
             return FeatureResponseDTO.builder()
