@@ -1,5 +1,7 @@
 package com.annapurna.annapurna.Utils;
 
+import java.util.List;
+
 public final class AP_Constants {
 
     /**
@@ -111,6 +113,11 @@ public final class AP_Constants {
      * The NUMBER_SEVEN of type Integer
      */
     public static final Integer NUMBER_SEVEN = 7;
+
+    /**
+     * The HEADER_LIST_FOR_BULK_UPLOAD of type List
+     */
+    public static final List<String> HEADER_LIST_FOR_BULK_UPLOAD = List.of("Full Name","EmailId","Phone Number","User Name","Password");
 
 
     /**
