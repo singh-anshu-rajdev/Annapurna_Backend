@@ -2,6 +2,7 @@ package com.annapurna.annapurna.Controller;
 
 import com.annapurna.annapurna.DTO.*;
 import com.annapurna.annapurna.Service.UserService;
+import com.annapurna.annapurna.Utils.GeneralFunctions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ public class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    GeneralFunctions generalFunctions;
 
     /**
      * Method under test : {@link UserController#generateAuthToken(LoginRequestDTO)}

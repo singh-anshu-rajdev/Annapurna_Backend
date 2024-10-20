@@ -5,8 +5,10 @@ import com.annapurna.annapurna.DTO.VerificationDTO;
 import com.annapurna.annapurna.Exception.CustomValidationException;
 import com.annapurna.annapurna.Exception.ErrorCode;
 import com.annapurna.annapurna.Model.OtpVerification;
+import com.annapurna.annapurna.Model.Shops;
 import com.annapurna.annapurna.Model.User;
 import com.annapurna.annapurna.Repository.OtpVerificationRepository;
+import com.annapurna.annapurna.Repository.ShopsRepository;
 import com.annapurna.annapurna.Repository.UserRepository;
 import com.annapurna.annapurna.Service.MailService;
 import com.annapurna.annapurna.Utils.AP_Constants;
@@ -68,6 +70,12 @@ public class MailServiceImpl implements MailService {
     UserRepository userRepository;
 
     /**
+     * The shopsRepository of type ShopsRepository
+     */
+    @Autowired
+    ShopsRepository shopsRepository;
+
+    /**
      * The asyncService of type AsyncService
      */
     @Autowired
@@ -94,9 +102,30 @@ public class MailServiceImpl implements MailService {
         try{
             Integer otp = 100000 + random.nextInt(900000);
 
-            // check weather the email is present or not
-            User user = userRepository.getUserByEmailIdAndDeletedFlagFalse(verificationDTO.getMail());
-            if(null!=user){
+            Boolean isValid = AP_Constants.FALSE;
+            String name = null;
+
+            if(null!=verificationDTO.getShopId()){
+                Shops shops = shopsRepository.findByIdAndShopMailId(verificationDTO.getShopId(),verificationDTO.getMail());
+                if(null!=shops){
+                    isValid = AP_Constants.TRUE;
+                    name = shops.getShopOwnerName();
+                }else{
+                    throw new CustomValidationException(ErrorCode.ERR_AP_2023);
+                }
+            }else{
+                // check weather the email is present or not
+                User user = userRepository.getUserByEmailIdAndDeletedFlagFalse(verificationDTO.getMail());
+                if(null!=user){
+                    isValid = AP_Constants.TRUE;
+                    name = user.getName();
+                }else{
+                    throw new CustomValidationException(ErrorCode.ERR_AP_2007);
+                }
+            }
+
+
+            if(isValid){
                 // saving otp data asynchronously
                 asyncService.saveOtpVerification(verificationDTO.getMail(),otp);
 
@@ -108,13 +137,11 @@ public class MailServiceImpl implements MailService {
                 mailMessage.setSubject(AP_Constants.OTP_VERIFICATION_SUBJECT);
 
                 // setting Body
-                String message = generalFunctions.buildOtpEmailContent(user.getName(),otp);
+                String message = generalFunctions.buildOtpEmailContent(name,otp);
                 mailMessage.setText(message);
                 mailMessage.setFrom(fromMail);
                 javaMailSender.send(mailMessage);
                 response.setMessage(AP_Constants.MAIL_SEND_SUCCESS_MESSAGE);
-            }else{
-                throw new CustomValidationException(ErrorCode.ERR_AP_2007);
             }
 
         }catch(CustomValidationException ex){
@@ -151,8 +178,25 @@ public class MailServiceImpl implements MailService {
         //Found the otp
         OtpVerification otpVerification = otps.get(0);
 
-        // Deactiving all the Otp of the user
-        if (otpVerification.getOtp().equals(verificationDTO.getOtp())) {
+        if(null!=verificationDTO.getShopId() && otpVerification.getOtp().equals(verificationDTO.getOtp())){
+            Shops shops = shopsRepository.findByIdAndShopMailId(verificationDTO.getShopId(),verificationDTO.getMail());
+            if(null!=shops){
+                shops.setIsMailVerified(AP_Constants.TRUE);
+                shops.setUpdatedBy(AP_Constants.DEFAULT_USER);
+                shops.setUpdatedTs(LocalDateTime.now());
+                shopsRepository.save(shops);
+
+                otps.parallelStream().forEach(ot -> {
+                    ot.setIsActive(AP_Constants.FALSE);
+                    ot.setUpdatedBy(AP_Constants.DEFAULT_USER);
+                    ot.setUpdatedTs(LocalDateTime.now());
+                });
+                otpVerificationRepository.saveAll(otps);
+            }else{
+                throw new CustomValidationException(ErrorCode.ERR_AP_2023);
+            }
+            // Deactiving all the Otp of the user
+        }else if (otpVerification.getOtp().equals(verificationDTO.getOtp())) {
 
             // welcoming mail only for mailId users
             if(null!=verificationDTO.getMail()){
@@ -180,8 +224,16 @@ public class MailServiceImpl implements MailService {
     public List<OtpVerification> validationOtp(VerificationDTO verificationDTO){
         List<OtpVerification> otps = null;
 
-
-        if (null != verificationDTO.getMail()) {
+        if(null!=verificationDTO.getShopId() && null!=verificationDTO.getMail()){
+            Shops shops = shopsRepository.findByMailIdAndMailVerified(verificationDTO.getMail());
+            if(null!=shops){
+                throw new CustomValidationException(ErrorCode.ERR_AP_2021);
+            }
+            otps = otpVerificationRepository.findByUniqueTypeAndValidTs(verificationDTO.getMail(), LocalDateTime.now());
+            if (null == otps || otps.isEmpty()) {
+                throw new CustomValidationException(ErrorCode.ERR_AP_2007); // cannot find otp by mail
+            }
+        }else if (null != verificationDTO.getMail()) {
             // validation for mail
             User user = userRepository.getUserByEmailIdDeletedFlagFalse(verificationDTO.getMail());
             if(null!=user){

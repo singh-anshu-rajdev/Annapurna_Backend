@@ -4,10 +4,15 @@ import com.annapurna.annapurna.DTO.*;
 import com.annapurna.annapurna.Exception.CustomValidationException;
 import com.annapurna.annapurna.Exception.ErrorCode;
 import com.annapurna.annapurna.Model.File;
+import com.annapurna.annapurna.Model.Location;
+import com.annapurna.annapurna.Model.Shops;
 import com.annapurna.annapurna.Model.User;
 import com.annapurna.annapurna.Repository.FileRepository;
+import com.annapurna.annapurna.Repository.LocationRepository;
+import com.annapurna.annapurna.Repository.ShopsRepository;
 import com.annapurna.annapurna.Repository.UserRepository;
 import com.annapurna.annapurna.Service.JwtService;
+import com.annapurna.annapurna.Service.MailService;
 import com.annapurna.annapurna.Service.UserService;
 import com.annapurna.annapurna.Utils.AP_Constants;
 import com.annapurna.annapurna.Utils.GeneralFunctions;
@@ -28,7 +33,15 @@ public class UserServiceImpl implements UserService {
      */
     public static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private static final String LOGGER_ERROR_REGISTRATION = "Error in registering the user - {}";
+    /**
+     * LOGGER_ERROR_REGISTRATION of type String
+     */
+    private static final String LOGGER_ERROR_REGISTRATION = "Error in registering the user...{}";
+
+    /**
+     * LOGGER_ERROR_SHOPS_REGISTRATION of type String
+     */
+    private static final String LOGGER_ERROR_SHOPS_REGISTRATION = "Error in Registering shops...{}";
 
     /**
      * The fileRepository of type FileRepository
@@ -59,6 +72,24 @@ public class UserServiceImpl implements UserService {
      */
     @Autowired
     JwtService jwtService;
+
+    /**
+     * The mailService of type MailService
+     */
+    @Autowired
+    MailService mailService;
+
+    /**
+     * The locationRepository of type LocationRepository
+     */
+    @Autowired
+    LocationRepository locationRepository;
+
+    /**
+     * The shopsRepository of type ShopsRepository
+     */
+    @Autowired
+    ShopsRepository shopsRepository;
 
     /**
      *
@@ -189,5 +220,93 @@ public class UserServiceImpl implements UserService {
         }else{
             throw new CustomValidationException(ErrorCode.ERR_AP_2006);
         }
+    }
+
+    /**
+     *
+     * @param shopRegistrationRequestDTO
+     * @param userCacheDTO
+     * @return
+     */
+    @Override
+    public ShopRegistrationResponseDTO shopRegistration(ShopRegistrationRequestDTO shopRegistrationRequestDTO, UserCacheDTO userCacheDTO) {
+        ShopRegistrationResponseDTO shopRegistrationResponseDTO = new ShopRegistrationResponseDTO();
+        try{
+            if(verifyShopRegistration(shopRegistrationRequestDTO,userCacheDTO)){
+                shopRegistrationResponseDTO  = ShopRegistrationResponseDTO.builder()
+                        .status(AP_Constants.TRUE).message(AP_Constants.SHOP_CREATED_SUCCESSFULLY).build();
+            }
+            Location location = Location.builder()
+                    .lattitude(shopRegistrationRequestDTO.getLattitude())
+                    .longitude(shopRegistrationRequestDTO.getLongitude())
+                    .desc(AP_Constants.SHOP_CREATION_DESCRIPTION)
+                    .address(shopRegistrationRequestDTO.getAddress())
+                    .createdBy(userCacheDTO.getUserName())
+                    .updatedBy(userCacheDTO.getUserName())
+                    .deletedFlag(AP_Constants.FALSE)
+                    .createdTs(LocalDateTime.now())
+                    .updatedTs(LocalDateTime.now())
+                    .build();
+
+            location = locationRepository.save(location);
+
+            Shops shops = Shops.builder()
+                    .shopDesc(shopRegistrationRequestDTO.getDescription())
+                    .shopMailId(shopRegistrationRequestDTO.getShopMailId())
+                    .isMailVerified(AP_Constants.FALSE)
+                    .shopName(shopRegistrationRequestDTO.getShopName())
+                    .location(location.getId())
+                    .pinCode(shopRegistrationRequestDTO.getPinCode())
+                    .deletedFlag(AP_Constants.FALSE)
+                    .shopPhNumber(shopRegistrationRequestDTO.getShopPhoneNumber())
+                    .isphNumberVerified(AP_Constants.FALSE)
+                    .shopOwnerName(shopRegistrationRequestDTO.getOwnerName())
+                    .createdBy(userCacheDTO.getUserName())
+                    .updatedBy(userCacheDTO.getUserName())
+                    .createdTs(LocalDateTime.now())
+                    .updatedTs(LocalDateTime.now())
+                    .build();
+
+            shops = shopsRepository.save(shops);
+            shopRegistrationResponseDTO.setShopId(shops.getId());
+
+        }catch (Exception ex) {
+
+            LOGGER.error(LOGGER_ERROR_SHOPS_REGISTRATION,ex.getMessage());
+            shopRegistrationResponseDTO.setStatus(AP_Constants.FALSE);
+            shopRegistrationResponseDTO.setMessage(ex.getMessage());
+        }
+        return shopRegistrationResponseDTO;
+    }
+
+    /**
+     *
+     * @param shopRegistrationRequestDTO
+     * @param userCacheDTO
+     * @return
+     */
+    public Boolean verifyShopRegistration(ShopRegistrationRequestDTO shopRegistrationRequestDTO, UserCacheDTO userCacheDTO){
+        if(null==shopRegistrationRequestDTO.getLattitude() ||
+                null==shopRegistrationRequestDTO.getLongitude() ||
+                null==shopRegistrationRequestDTO.getPinCode() ||
+                null==shopRegistrationRequestDTO.getShopName() ||
+                null== shopRegistrationRequestDTO.getUserId() ||
+                null==shopRegistrationRequestDTO.getShopMailId() ||
+                !userCacheDTO.getUserId().equals(shopRegistrationRequestDTO.getUserId())){
+            throw new CustomValidationException(ErrorCode.ERR_AP_2006);
+        }
+        Shops shopEmail = shopsRepository.findByShopMailId(shopRegistrationRequestDTO.getShopMailId());
+        if(null!=shopEmail){
+            throw new CustomValidationException(ErrorCode.ERR_AP_2020);
+        }
+        if(null!=shopRegistrationRequestDTO.getShopPhoneNumber()){
+            Shops shopNumber = shopsRepository.findByShopPhNumber(shopRegistrationRequestDTO
+                    .getShopPhoneNumber());
+            if(null!=shopNumber){
+                throw new CustomValidationException(ErrorCode.ERR_AP_2022);
+            }
+        }
+
+        return AP_Constants.TRUE;
     }
 }

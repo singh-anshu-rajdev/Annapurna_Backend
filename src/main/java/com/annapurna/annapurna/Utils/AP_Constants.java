@@ -25,6 +25,16 @@ public final class AP_Constants {
     public static final String DEFAULT_USER = "user";
 
     /**
+     * The SHOP_CREATION_DESCRIPTION of type String
+     */
+    public static final String SHOP_CREATION_DESCRIPTION = "Shop Location Details";
+
+    /**
+     * The SHOP_CREATED_SUCCESSFULLY of type String
+     */
+    public static final String SHOP_CREATED_SUCCESSFULLY = "Shop Registered Succesfully";
+
+    /**
      * The TRUE of type BOOLEAN
      */
     public static final Boolean TRUE = true;

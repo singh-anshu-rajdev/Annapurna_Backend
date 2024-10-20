@@ -2,6 +2,8 @@ package com.annapurna.annapurna.Controller;
 
 import com.annapurna.annapurna.DTO.*;
 import com.annapurna.annapurna.Service.UserService;
+import com.annapurna.annapurna.Utils.GeneralFunctions;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,12 @@ public class UserController {
      */
     @Autowired
     UserService userService;
+
+    /**
+     * The generalFunctions of type GeneralFunctions
+     */
+    @Autowired
+    GeneralFunctions generalFunctions;
 
     /**
      *
@@ -58,5 +66,18 @@ public class UserController {
     @PostMapping("/unsecure/checkExistingData")
     public ResponseEntity<DataValidatingResponseDTO> checkExistingData(@RequestBody DataValidatingRequestDTO dataValidatingRequestDTO){
         return new ResponseEntity<>(userService.checkExistingData(dataValidatingRequestDTO),HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param shopRegistrationRequestDTO
+     * @param httpServletRequest
+     * @return
+     */
+    @PostMapping("/shopRegistration")
+    public ResponseEntity<ShopRegistrationResponseDTO> shopRegistration(@RequestBody ShopRegistrationRequestDTO shopRegistrationRequestDTO,
+                                                               HttpServletRequest httpServletRequest){
+        return new ResponseEntity<>(userService.shopRegistration(shopRegistrationRequestDTO
+                ,generalFunctions.getUserCache(httpServletRequest)),HttpStatus.OK);
     }
 }

@@ -14,6 +14,9 @@ public class VerificationDTO {
     /* The mail Id */
     private String mail;
 
+    /* The  shop Id */
+    private Integer shopId;
+
     /* The phone Number */
     private String phoneNumber;
 

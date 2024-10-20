@@ -102,6 +102,26 @@ public enum ErrorCode implements ErrorHandle{
      */
     ERR_AP_2019(2019,"Testimonial Data Not found"),
 
+    /**
+     * The Error_Annapurna_2020
+     */
+    ERR_AP_2020(2020,"Email Already Registered"),
+
+    /**
+     * The Error_Annapurna_2021
+     */
+    ERR_AP_2021(2021,"Shop Mail Already Verified"),
+
+    /**
+     * The Error_Annapurna_2022
+     */
+    ERR_AP_2022(2022,"Phone Number already registered"),
+
+    /**
+     * The Error_Annapurna_2023
+     */
+    ERR_AP_2023(2023,"Shop details not found"),
+
     ;
     /**
      * The ErrCode of type Integer

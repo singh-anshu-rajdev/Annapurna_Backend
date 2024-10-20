@@ -33,4 +33,12 @@ public interface UserService {
      * @return
      */
     TokenResponseDTO generateTokenFromRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO);
+
+    /**
+     *
+     * @param shopRegistrationRequestDTO
+     * @param userCacheDTO
+     * @return
+     */
+    ShopRegistrationResponseDTO shopRegistration(ShopRegistrationRequestDTO shopRegistrationRequestDTO,UserCacheDTO userCacheDTO);
 }
