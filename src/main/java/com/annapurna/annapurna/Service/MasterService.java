@@ -1,9 +1,6 @@
 package com.annapurna.annapurna.Service;
 
-import com.annapurna.annapurna.DTO.FeatureDataRequestDTO;
-import com.annapurna.annapurna.DTO.GeneralResponseDTO;
-import com.annapurna.annapurna.DTO.MasterDataResponseDTO;
-import com.annapurna.annapurna.DTO.UserCacheDTO;
+import com.annapurna.annapurna.DTO.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,4 +20,12 @@ public interface MasterService {
      * @return
      */
     GeneralResponseDTO createFeature(FeatureDataRequestDTO featureDataRequestDTO, UserCacheDTO userCacheDTO);
+
+    /**
+     *
+     * @param nearestShopRequestDTO
+     * @param userCache
+     * @return
+     */
+    NearestShopResponseDTO getNearestShops(NearestShopRequestDTO nearestShopRequestDTO, UserCacheDTO userCache);
 }

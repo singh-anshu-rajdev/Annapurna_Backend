@@ -24,9 +24,9 @@ public class Shops{
     @Column(name = "shop_name")
     private String shopName;
 
-    /* The shop owner Name */
-    @Column(name = "owner_name")
-    private String shopOwnerName;
+    /* The shop owner id */
+    @Column(name = "owner_id")
+    private Integer shopOwnerId;
 
     /* The shop phone Number */
     @Column(name = "shop_phNumber")
@@ -39,6 +39,9 @@ public class Shops{
     /* The shop Mail Id */
     @Column(name = "shop_mail_Id")
     private String shopMailId;
+
+    @Column(name = "shop_rating")
+    private Double shopRating;
 
     /* The isMailVerified Flag */
     @Column(name = "is_mail_verified")

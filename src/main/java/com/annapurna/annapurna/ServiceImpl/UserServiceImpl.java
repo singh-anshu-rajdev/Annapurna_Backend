@@ -260,7 +260,7 @@ public class UserServiceImpl implements UserService {
                     .deletedFlag(AP_Constants.FALSE)
                     .shopPhNumber(shopRegistrationRequestDTO.getShopPhoneNumber())
                     .isphNumberVerified(AP_Constants.FALSE)
-                    .shopOwnerName(shopRegistrationRequestDTO.getOwnerName())
+                    .shopOwnerId(Integer.parseInt(userCacheDTO.getUserId()))
                     .createdBy(userCacheDTO.getUserName())
                     .updatedBy(userCacheDTO.getUserName())
                     .createdTs(LocalDateTime.now())

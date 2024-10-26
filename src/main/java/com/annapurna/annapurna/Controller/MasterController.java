@@ -1,13 +1,12 @@
 package com.annapurna.annapurna.Controller;
 
-import com.annapurna.annapurna.DTO.FeatureDataRequestDTO;
-import com.annapurna.annapurna.DTO.GeneralResponseDTO;
-import com.annapurna.annapurna.DTO.MasterDataResponseDTO;
+import com.annapurna.annapurna.DTO.*;
 import com.annapurna.annapurna.Service.MasterService;
 import com.annapurna.annapurna.Utils.GeneralFunctions;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +48,16 @@ public class MasterController {
             , HttpServletRequest httpServletRequest){
         return new ResponseEntity<>(masterService.createFeature(featureDataRequestDTO
                 ,generalFunctions.getUserCache(httpServletRequest)),HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param nearestShopRequestDTO
+     * @param httpServletRequest
+     * @return
+     */
+    @GetMapping("/getNearestShops")
+    public ResponseEntity<NearestShopResponseDTO> getNearestShops(@RequestBody NearestShopRequestDTO nearestShopRequestDTO, HttpServletRequest httpServletRequest){
+        return new ResponseEntity<>(masterService.getNearestShops(nearestShopRequestDTO,generalFunctions.getUserCache(httpServletRequest)), HttpStatus.OK);
     }
 }

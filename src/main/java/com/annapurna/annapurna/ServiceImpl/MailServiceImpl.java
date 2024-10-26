@@ -109,7 +109,8 @@ public class MailServiceImpl implements MailService {
                 Shops shops = shopsRepository.findByIdAndShopMailId(verificationDTO.getShopId(),verificationDTO.getMail());
                 if(null!=shops){
                     isValid = AP_Constants.TRUE;
-                    name = shops.getShopOwnerName();
+                    User user = userRepository.getUserById(Long.valueOf(shops.getShopOwnerId()));
+                    name = user.getName();
                 }else{
                     throw new CustomValidationException(ErrorCode.ERR_AP_2023);
                 }

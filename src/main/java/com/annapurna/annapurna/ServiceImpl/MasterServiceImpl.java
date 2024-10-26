@@ -1,21 +1,48 @@
 package com.annapurna.annapurna.ServiceImpl;
 
 import com.annapurna.annapurna.DTO.*;
+import com.annapurna.annapurna.Exception.CustomValidationException;
+import com.annapurna.annapurna.Exception.ErrorCode;
 import com.annapurna.annapurna.Model.Features;
+import com.annapurna.annapurna.Model.Location;
+import com.annapurna.annapurna.Model.Shops;
 import com.annapurna.annapurna.Model.User;
 import com.annapurna.annapurna.Repository.FeaturesRepository;
+import com.annapurna.annapurna.Repository.LocationRepository;
+import com.annapurna.annapurna.Repository.ShopsRepository;
 import com.annapurna.annapurna.Repository.UserRepository;
 import com.annapurna.annapurna.Service.MasterService;
 import com.annapurna.annapurna.Utils.AP_Constants;
+import com.annapurna.annapurna.Utils.AsyncService;
 import com.annapurna.annapurna.Utils.GeneralFunctions;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import org.slf4j.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class MasterServiceImpl implements MasterService {
+
+    /**
+     *  Logger instance to log important events and errors in the service.
+     */
+    private final Logger logger = LoggerFactory.getLogger(MasterServiceImpl.class);
+
+    /**
+     * The ERROR_FETCHING_NEAREST_PLACE of type String
+     */
+    private final String ERROR_FETCHING_NEAREST_PLACE  = "Error in fetching nearest shops...{}";
 
     /**
      * The userRepository of type UserRepository
@@ -34,6 +61,24 @@ public class MasterServiceImpl implements MasterService {
      */
     @Autowired
     private GeneralFunctions generalFunctions;
+
+    /**
+     * The shopsRepository of type ShopsRepository
+     */
+    @Autowired
+    private ShopsRepository shopsRepository;
+
+    /**
+     * The locationRepository of type LocationRepository
+     */
+    @Autowired
+    private LocationRepository locationRepository;
+
+    /**
+     * The asyncService of type AsyncService
+     */
+    @Autowired
+    private AsyncService asyncService;
 
     /**
      *
@@ -114,5 +159,74 @@ public class MasterServiceImpl implements MasterService {
             generalResponseDTO.setMessage(ex.getMessage());
         }
         return generalResponseDTO;
+    }
+
+    /**
+     *
+     * @param nearestShopRequestDTO
+     * @param userCache
+     * @return
+     */
+    @Override
+    public NearestShopResponseDTO getNearestShops(NearestShopRequestDTO nearestShopRequestDTO, UserCacheDTO userCache) {
+        if(userCache.getUserId().equals(nearestShopRequestDTO.getUserId().toString())){
+            throw new CustomValidationException(ErrorCode.ERR_AP_2006);
+        }else{
+            try{
+                asyncService.saveRequestBody((new ObjectMapper()).writeValueAsString(nearestShopRequestDTO),userCache);
+                NearestShopResponseDTO nearestShopResponseDTO = new NearestShopResponseDTO();
+                List<ShopsResponseDTO> shopsResponseDTOList = new ArrayList<>();
+
+                // Fetch th pinCode
+                String pincode = generalFunctions.getPinCode(nearestShopRequestDTO.getLattitude(),nearestShopRequestDTO.getLongitude());
+                Pageable pageable = PageRequest.of(nearestShopRequestDTO.getPageNumber(),nearestShopRequestDTO.getNumberOfRecords());
+                String pinCodeStart = Integer.toString(Integer.parseInt(pincode)-2);
+                String pinCodeEnd = Integer.toString(Integer.parseInt(pincode)+2);
+
+                // Fetch shop Details
+                List<Shops> shopsList = shopsRepository.findByPincodeAndDeletedFlag(pinCodeStart,pinCodeEnd,pageable);
+                Integer totalRecords = shopsRepository.countByPincodeAndDeletedFlag(pinCodeStart,pinCodeEnd);
+                if(null!=shopsList && !shopsList.isEmpty()){
+                    List<Integer> locationIds = shopsList.parallelStream().map(Shops::getLocation).toList();
+
+                    // Get the Location Details
+                    List<Location> locationList = locationRepository.findByLocationIds(locationIds);
+                    Map<Integer,Shops> shopLocationMap = shopsList.parallelStream().collect(Collectors.toMap(Shops::getLocation, Function.identity(),(existing,replace)->existing));
+                    List<ShopsResponseDTO> finalShopsResponseDTOList = shopsResponseDTOList;
+
+                    // Get the location Distance and set DTO
+                    locationList.parallelStream().forEach(location -> {
+                        Double distance = generalFunctions.haversine(nearestShopRequestDTO.getLattitude(),
+                                nearestShopRequestDTO.getLongitude(),location.getLattitude(),location.getLongitude());
+                        Shops shop = shopLocationMap.get(location.getId());
+                        ShopsResponseDTO shopsResponseDTO = ShopsResponseDTO.builder()
+                                .shopName(shop.getShopName())
+                                .shopPhNumber(shop.getShopPhNumber())
+                                .shopRating(shop.getShopRating())
+                                .shopDist(distance)
+                                .shopMailId(shop.getShopMailId())
+                                .shopDesc(shop.getShopDesc())
+                                .build();
+                        finalShopsResponseDTOList.add(shopsResponseDTO);
+                    });
+
+                    // sort the response based on distance
+                    shopsResponseDTOList = shopsResponseDTOList.stream().sorted(Comparator
+                            .comparingDouble(ShopsResponseDTO::getShopDist)).toList();
+
+                    // Set the response
+                    nearestShopResponseDTO.setShopsResponseDTOList(shopsResponseDTOList);
+                    nearestShopResponseDTO.setTotalNumberOfRecords(totalRecords);
+                    nearestShopResponseDTO.setCurrentPageNumber(nearestShopRequestDTO.getPageNumber());
+                    return nearestShopResponseDTO;
+                }else{
+                    throw new CustomValidationException(ErrorCode.ERR_AP_2013);
+                }
+            } catch (Exception ex) {
+                logger.error(ERROR_FETCHING_NEAREST_PLACE,ex.getMessage());
+                throw new CustomValidationException(ErrorCode.ERR_AP_2000);
+            }
+
+        }
     }
 }

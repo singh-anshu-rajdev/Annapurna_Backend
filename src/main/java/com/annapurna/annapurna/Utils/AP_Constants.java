@@ -60,6 +60,11 @@ public final class AP_Constants {
     public static final String USER_VERIFIED = "User verified Successfully";
 
     /**
+     * The EARTH_RADIUS_IN_KM of type Double
+     */
+    public static final double EARTH_RADIUS_IN_KM = 6371.0;
+
+    /**
      * The AT_THE_RATE of type String
      */
     public static final String AT_THE_RATE = "@";

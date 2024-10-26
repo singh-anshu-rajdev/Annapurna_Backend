@@ -237,7 +237,7 @@ public class JwtServiceImpl implements JwtService {
         // fetch the user data
         User user = userRepository.getUserByUserNameOrEmailAndDeletedFlagFalse(userName).get();
         if(null==user){
-            throw new CustomValidationException(ErrorCode.ERR_AP_2013);
+            throw new CustomValidationException(ErrorCode.ERR_AP_2012);
         }
         // created the userCache
         UserCacheDTO userCacheDTO = new UserCacheDTO();

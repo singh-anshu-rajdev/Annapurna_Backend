@@ -1,10 +1,13 @@
 package com.annapurna.annapurna.Utils;
 
+import com.annapurna.annapurna.DTO.UserCacheDTO;
 import com.annapurna.annapurna.Exception.CustomValidationException;
 import com.annapurna.annapurna.Exception.ErrorCode;
 import com.annapurna.annapurna.Model.OtpVerification;
+import com.annapurna.annapurna.Model.RequestRecords;
 import com.annapurna.annapurna.Model.User;
 import com.annapurna.annapurna.Repository.OtpVerificationRepository;
+import com.annapurna.annapurna.Repository.RequestRecordsRepository;
 import com.annapurna.annapurna.Repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +66,12 @@ public class AsyncService {
      */
     @Autowired
     GeneralFunctions generalFunctions;
+
+    /**
+     * The requestRecordsRepository of type RequestRecordsRepository
+     */
+    @Autowired
+    RequestRecordsRepository requestRecordsRepository;
 
     /**
      *
@@ -135,5 +144,19 @@ public class AsyncService {
         }catch (Exception ex){
             logger.error(LOGGER_MESSAGE_MAIL_FAILURE, ex.getMessage());
         }
+    }
+
+    @Async
+    public void saveRequestBody(String requestBody, UserCacheDTO userCacheDTO){
+        RequestRecords requestRecords = RequestRecords.builder()
+                .requestBody(requestBody)
+                .deletedFlag(AP_Constants.FALSE)
+                .createdTs(LocalDateTime.now())
+                .createdBy(userCacheDTO.getName())
+                .updatedTs(LocalDateTime.now())
+                .updatedBy(userCacheDTO.getName())
+                .build();
+
+        requestRecordsRepository.save(requestRecords);
     }
 }

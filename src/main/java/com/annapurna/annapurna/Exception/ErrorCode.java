@@ -70,7 +70,7 @@ public enum ErrorCode implements ErrorHandle{
     /**
      * The Error_Annapurna_2013
      */
-    ERR_AP_2013(2013,"Invalid Username or password"),
+    ERR_AP_2013(2013,"No nearby Shops Found"),
 
     /**
      * The Error_Annapurna_2014
